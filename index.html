@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta tags para SEO y Vista Previa de Enlaces -->
+    <title>Unite League - Torneos de Fortnite</title>
+    <meta name="description" content="Participa en torneos de Fortnite, crea duelos personalizados y gana premios en efectivo o Pavos.">
+    <meta property="og:title" content="Unite League - Torneos de Fortnite">
+    <meta property="og:description" content="Participa en torneos de Fortnite, crea duelos personalizados y gana premios en efectivo o Pavos.">
+    <meta property="og:image" content="https://i.imgur.com/sXTC0BS.png">
+    <meta property="og:url" content="https://uniteleague.netlify.app">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/sXTC0BS.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Exo 2', sans-serif; background-color: #111111; color: #e5e7eb; padding-bottom: 80px; }
+        .rgb-text { background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: slideGradient 3s linear infinite; }
+        .rgb-border-anim { border: 2px solid transparent; border-image: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077) 1; border-image-slice: 1; animation: slideGradient 3s linear infinite; }
+        .rgb-bg-anim { background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077); background-size: 200% auto; animation: slideGradient 3s linear infinite; }
+        .rgb-glow { filter: drop-shadow(0 0 8px rgba(255, 0, 119, 0.7)); }
+        .rgb-glow-blue { filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.7)); }
+        @keyframes slideGradient { to { background-position: 200% center; } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px 5px rgba(255, 0, 119, 0.7); } 50% { box-shadow: 0 0 25px 10px rgba(0, 119, 255, 0.7); } }
+        .pulse-btn { animation: pulse-glow 2.5s infinite; }
+        .nav-category-glow { background: linear-gradient(90deg, #ff0077, #7700ff); box-shadow: 0 0 15px 2px rgba(255, 0, 119, 0.5); }
+        .nav-category-glow-blue { background: #0077ff; box-shadow: 0 0 15px 2px rgba(0, 119, 255, 0.5); }
+        .nav-category-glass { background: rgba(31, 41, 55, 0.5); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); }
+        .modal-bg { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0a0a0a; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.5s ease-out; }
+        #splash-logo { width: 120px; animation: pulse-rgb-splash 2s infinite; }
+        .loader-bar { width: 150px; height: 4px; background-color: #333; border-radius: 2px; overflow: hidden; margin-top: 20px; }
+        .loader-bar-inner { width: 100%; height: 100%; background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff); animation: loading 2.5s ease-out forwards; }
+        @keyframes loading { from { width: 0%; } to { width: 100%; } }
+        @keyframes pulse-rgb-splash { 0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 0, 119, 0.7)); } 50% { filter: drop-shadow(0 0 20px rgba(0, 119, 255, 0.7)); } }
+        .bottom-nav-glass { background: rgba(17, 17, 17, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.05); position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; border-radius: 1.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 50; }
+        .nav-item-active { position: relative; color: #ff0077; }
+        .nav-item-active::before { content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background-color: #ff0077; border-radius: 50%; z-index: -1; opacity: 0.15; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popIn { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 0.15; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes pulse-logo-aura { 0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 0, 119, 0.8)); } 50% { filter: drop-shadow(0 0 12px rgba(0, 119, 255, 0.8)); } }
+        .logo-aura { animation: pulse-logo-aura 3s infinite; }
+        /* Ocultar scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Pantalla de Carga -->
+    <div id="splash-screen">
+        <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" id="splash-logo">
+        <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+    </div>
+
+    <!-- Barra de Navegación Superior -->
+    <nav class="sticky top-0 z-40 bg-gray-950/90 backdrop-blur-md px-4 py-3 flex justify-between items-center border-b border-gray-800/50">
+        <!-- Íconos de Juego (PC) -->
+        <div class="hidden md:flex items-center gap-4">
+            <!-- Fortnite (Activo) -->
+            <a href="index.html" class="relative text-pink-500" title="Fortnite">
+                <i data-lucide="swords" class="w-6 h-6"></i>
+                <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-pink-500 rounded-full"></span>
+            </a>
+            <!-- Clash Royale (Inactivo) -->
+            <a href="clash.html" class="text-gray-400 hover:text-white transition" title="Clash Royale">
+                <i data-lucide="castle" class="w-6 h-6"></i>
+            </a>
+        </div>
+        <!-- Ícono de Búsqueda (Móvil) -->
+        <button onclick="openSearchModal()" class="text-gray-400 hover:text-white transition md:hidden">
+            <i data-lucide="search" class="w-6 h-6"></i>
+        </button>
+        <!-- Logo Central -->
+        <a href="index.html" class="flex-grow md:flex-grow-0 flex items-center justify-center gap-2">
+            <span class="text-xl font-bold tracking-tighter text-white">UNITE</span>
+            <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" class="w-8 h-8 logo-aura">
+            <span class="text-xl font-bold tracking-tighter text-white">LEAGUE</span>
+        </a>
+        <!-- Iconos Derecha (Campana y Búsqueda PC) -->
+        <div class="flex items-center gap-4">
+            <button onclick="openSearchModal()" class="text-gray-400 hover:text-white transition hidden md:block">
+                <i data-lucide="search" class="w-6 h-6"></i>
+            </button>
+            <button onclick="openNotifications()" class="text-gray-400 hover:text-white transition relative">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-full border border-gray-950"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Panel de Notificaciones (Oculto) -->
+    <div id="notifications-panel" class="hidden fixed top-0 left-0 w-full h-full z-50 modal-bg" onclick="closeNotifications()">
+        <div class="absolute top-16 right-4 w-80 bg-gray-900 rounded-2xl shadow-lg border border-gray-800 p-4 fade-in" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-bold text-white mb-4">Novedades</h3>
+            <div class="space-y-3">
+                <div class="text-sm">
+                    <p class="font-bold text-blue-400">¡Nuevos Mapas 3v3 y 4v4!</p>
+                    <p class="text-gray-400">Hemos añadido nuevos mapas de Piece Control y Box Fights para 3v3 y 4v4. ¡Revisa la sección de duelos!</p>
+                </div>
+                <div class="border-t border-gray-700"></div>
+                <div class="text-sm">
+                    <p class="font-bold text-green-400">¡Torneos de Clash Royale!</p>
+                    <p class="text-gray-400">¡Ya puedes competir en torneos de Clash Royale! Revisa la nueva sección en la barra de navegación.</p>
+                </div>
+                <div class="border-t border-gray-700"></div>
+                <div class="text-sm">
+                    <p class="font-bold text-pink-400">¡Aura de Logo Añadida!</p>
+                    <p class="text-gray-400">Hemos añadido un aura pulsante RGB a nuestro logo. ¡Se ve genial!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Búsqueda (Oculto) -->
+    <div id="search-modal" class="hidden fixed top-0 left-0 w-full h-full z-50 modal-bg" onclick="closeSearchModal()">
+        <div class="absolute top-20 left-1/2 -translate-x-1/2 w-11/12 max-w-lg bg-gray-900 rounded-2xl shadow-lg border border-gray-800 p-4 fade-in" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-bold text-white mb-4">Buscar Torneos</h3>
+            <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Buscar por nombre o modo (ej. 'Box Fight', 'Zero Build')" class="w-full bg-gray-800 text-white placeholder-gray-500 rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="p-4 fade-in">
+        <!-- Botón Crear Duelo Fijo -->
+        <div class="fixed bottom-24 md:bottom-6 right-4 z-30">
+            <button onclick="openModal()" class="pulse-btn rgb-bg-anim text-white font-bold rounded-full w-16 h-16 flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+                <i data-lucide="swords" class="w-8 h-8"></i>
+            </button>
+        </div>
+
+        <!-- Categorías -->
+        <nav class="sticky top-16 md:top-auto md:relative bg-[#111111] md:bg-transparent z-30 py-3 md:py-0 mb-4">
+            <div class="flex justify-center">
+                <div id="categories-scroll" class="flex gap-2 items-center overflow-x-auto no-scrollbar px-4 md:px-0 md:justify-center md:flex-wrap">
+                    <button data-filter="todos" class="category-btn nav-category-glow text-white font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">Todos</button>
+                    <button data-filter="br" class="category-btn nav-category-glass text-gray-300 font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">Battle Royale</button>
+                    <button data-filter="1v1" class="category-btn nav-category-glass text-gray-300 font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">1v1</button>
+                    <button data-filter="2v2" class="category-btn nav-category-glass text-gray-300 font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">2v2</button>
+                    <button data-filter="3v3" class="category-btn nav-category-glass text-gray-300 font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">3v3</button>
+                    <button data-filter="4v4" class="category-btn nav-category-glass text-gray-300 font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">4v4</button>
+                    <a href="reglas.html" class="nav-category-glow-blue text-white font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">Reglas</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Lista de Torneos -->
+        <div id="tournament-list" class="space-y-6">
+
+            <!-- Sección Torneos Principales -->
+            <section class="tournament-section" data-category="br">
+                <h2 class="text-2xl font-bold text-white mb-4 tracking-tight">TORNEOS PRINCIPALES</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Torneo Springfield -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Springfield Battle Royale BR Cero Construcción Recarga Orígenes">
+                        <div onclick="openDetailsModal('Springfield Battle Royale', 'https://i.imgur.com/AtkPcwT.png', '¡Lánzate desde el autobús de batalla a... ¿Springfield? En la isla de Springfield, de 80 jugadores, caen rosquillas del cielo y la central nuclear está a puntito de colapsar, pero tranqui: todo va bien. Prepárate para un mes lleno de chistes, artilugios y cortos de animación de Los Simpson.', 'https://discord.gg/nszDU2wHez', 'Solitarios', '$4 MXN (Entrada)', 'NA-Central', 3, 100)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/AtkPcwT.png');">
+                        </div>
+                        <div class="p-4">
+                            <span class="text-xs font-bold text-yellow-500 bg-yellow-900/50 px-2 py-1 rounded">BATTLE ROYALE</span>
+                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Springfield Battle Royale</h3>
+                            <div class="text-sm text-gray-400 mb-3">
+                                <span class="font-bold">$4 MXN</span> (Entrada) <span class="mx-2">|</span> <i data-lucide="server" class="w-4 h-4 inline-block -mt-1"></i> NA-Central
+                            </div>
+                            <!-- Barra de Progreso -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs font-bold text-gray-400 mb-1">
+                                    <span>JUGADORES</span>
+                                    <span><span class="text-white">3</span> / 100</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                    <div class="bg-gradient-to-r from-pink-500 to-yellow-500 h-2.5 rounded-full" style="width: 3%"></div>
+                                </div>
+                            </div>
+                            <a href="https://discord.gg/nszDU2wHez" target="_blank" class="block w-full text-center bg-gradient-to-r from-pink-600 to-yellow-500 text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">
+                                Inscripción (Solo Discord)
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Torneo Cero Construcción -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Cero Construcción Springfield">
+                        <div onclick="openDetailsModal('Springfield Cero Construcción', 'https://i.imgur.com/bkrtoCa.png', 'Springfield Cero Construcción conserva toda la acción, botín y progreso del clásico Battle Royale, solo que sin construcción.', 'https://discord.gg/nszDU2wHez', 'Solitarios', 'Próximamente', 'NA-Central', 0, 0)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/bkrtoCa.png');">
+                        </div>
+                        <div class="p-4">
+                            <span class="text-xs font-bold text-blue-500 bg-blue-900/50 px-2 py-1 rounded">CERO CONSTRUCCIÓN</span>
+                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Springfield Cero Construcción</h3>
+                            <button disabled class="block w-full text-center bg-gray-700 text-gray-400 font-bold py-3 px-5 rounded-lg cursor-not-allowed">
+                                Próximamente (Anuncios en Discord)
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Torneo Recarga -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Recarga (Reload)">
+                        <div onclick="openDetailsModal('Modo Recarga (Reload)', 'https://i.imgur.com/BnWv01n.png', 'Recarga es un trepidante modo de juego de Battle Royale para 40 jugadores centrado únicamente en lograr la victoria junto a tu escuadrón. ¡Podrás reaparecer siempre que algún miembro de tu equipo siga en pie!', 'https://discord.gg/nszDU2wHez', 'Escuadrones', 'Próximamente', 'NA-Central', 0, 0)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/BnWv01n.png');">
+                        </div>
+                        <div class="p-4">
+                            <span class="text-xs font-bold text-green-500 bg-green-900/50 px-2 py-1 rounded">RECARGA</span>
+                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Modo Recarga (Reload)</h3>
+                            <button disabled class="block w-full text-center bg-gray-700 text-gray-400 font-bold py-3 px-5 rounded-lg cursor-not-allowed">
+                                Próximamente (Anuncios en Discord)
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Torneo Orígenes -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Fortnite Orígenes (OG)">
+                        <div onclick="openDetailsModal('Fortnite: Orígenes', 'https://i.imgur.com/9VtXIia.png', 'Disfruta de los orígenes de Battle Royale en el Capítulo 1 - Temporada 6. ¡Salta del autobús y explora el mapa original, con el botín original y revive las temporadas originales!', 'https://discord.gg/nszDU2wHez', 'Escuadrones', 'Próximamente', 'NA-Central', 0, 0)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/9VtXIia.png');">
+                        </div>
+                        <div class="p-4">
+                            <span class="text-xs font-bold text-purple-500 bg-purple-900/50 px-2 py-1 rounded">ORÍGENES (OG)</span>
+                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Fortnite: Orígenes</h3>
+                            <button disabled class="block w-full text-center bg-gray-700 text-gray-400 font-bold py-3 px-5 rounded-lg cursor-not-allowed">
+                                Próximamente (Anuncios en Discord)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 1v1 -->
+            <section class="tournament-section" data-category="1v1">
+                <h2 class="text-2xl font-bold text-white mb-4 tracking-tight">DUELOS PERSONALIZADOS 1V1</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Mapa 1v1 Build Fights -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="1v1 Build Fights (Construcción)">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/oHSayHs.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">1v1 Build Fights!</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 1832-0431-4852</p>
+                            <button onclick="openModalWithMap('1v1', '1v1 Build Fights')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- Mapa 1v1 Realistics -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="1v1 Realistics (Realista)">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/eTLNfeh.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">1v1 Speed Realistics</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 7950-6306-4857</p>
+                            <button onclick="openModalWithMap('1v1', '1v1 Speed Realistics')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- Mapa 1v1 Zero Build -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="1v1 Zero Build (Cero Construcción)">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/xxX08yU.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">1v1 Rapid Zero Build</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 9672-8216-8367</p>
+                            <button onclick="openModalWithMap('1v1', '1v1 Rapid Zero Build')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- Mapa 1v1 Piece Control -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="1v1 Piece Control">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/USjsjuW.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">1v1 Piece Control</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 8298-6891-9930</p>
+                            <button onclick="openModalWithMap('1v1', '1v1 Piece Control')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección 2v2 -->
+            <section class="tournament-section" data-category="2v2">
+                <h2 class="text-2xl font-bold text-white mb-4 tracking-tight">DUELOS PERSONALIZADOS 2V2</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- 2v2 Box Fights -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="2v2 Box Fights">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/tSnaHms.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">2v2 PANDVIL Box Fights</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 6562-8953-6567</p>
+                            <button onclick="openModalWithMap('2v2', '2v2 Box Fights')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- 2v2 Realistics -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="2v2 Speed Realistics">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/5dqwIsE.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">2v2 Speed Realistics</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 6570-5231-1418</p>
+                            <button onclick="openModalWithMap('2v2', '2v2 Speed Realistics')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- 2v2 Zero Build -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="2v2 Zero Build">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/ryymcnd.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">2v2 Rapid Zero Build</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 9546-9918-8917</p>
+                            <button onclick="openModalWithMap('2v2', '2v2 Rapid Zero Build')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- 2v2 Piece Control -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="2v2 Piece Control">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/KRrXtOM.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">2v2 Piece Control</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 0148-0322-5437</p>
+                            <button onclick="openModalWithMap('2v2', '2v2 Piece Control')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 3v3 -->
+            <section class="tournament-section" data-category="3v3">
+                <h2 class="text-2xl font-bold text-white mb-4 tracking-tight">DUELOS PERSONALIZADOS 3V3</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- 3v3 Box Fights -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="3v3 Box Fights">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/LejOeEu.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">3v3 PANDVIL Box Fights</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 7686-1102-4551</p>
+                            <button onclick="openModalWithMap('3v3', '3v3 Box Fights')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- 3v3 Realistics -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="3v3 Speed Realistics">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/BHKzFdP.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">3v3 Speed Realistics</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 6369-4500-6726</p>
+                            <button onclick="openModalWithMap('3v3', '3v3 Speed Realistics')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- 3v3 Piece Control -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="3v3 Piece Control">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/8cdkDbF.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">3v3 Piece Control</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 6366-6217-9042</p>
+                            <button onclick="openModalWithMap('3v3', '3v3 Piece Control')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 4v4 -->
+            <section class="tournament-section" data-category="4v4">
+                <h2 class="text-2xl font-bold text-white mb-4 tracking-tight">DUELOS PERSONALIZADOS 4V4</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- 4v4 Box Fights -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="4v4 Box Fights">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/XfALbBx.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">4v4 PANDVIL Box Fight</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 0667-8789-2959</p>
+                            <button onclick="openModalWithMap('4v4', '4v4 Box Fights')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                    <!-- 4v4 Zone Wars -->
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="4v4 Zone Wars">
+                        <div class="h-40 w-full bg-cover bg-center" style="background-image: url('https://i.imgur.com/QwWQcY5.png');"></div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-white">PRO ZONE WARS</h3>
+                            <p class="text-sm text-gray-400 mb-3">Código: 3537-4087-0888</p>
+                            <button onclick="openModalWithMap('4v4', 'PRO ZONE WARS')" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">Crear Duelo</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Comunidad -->
+            <section class="tournament-section" data-category="todos">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 text-center">
+                    <h2 class="text-2xl font-bold text-white mb-3">¡Únete a la Comunidad!</h2>
+                    <p class="text-gray-400 mb-6">Elige tu plataforma preferida. ¡Discord es obligatorio para inscripciones!</p>
+                    <div class="flex flex-col md:flex-row gap-4 justify-center">
+                        <a href="https://discord.gg/nszDU2wHez" target="_blank" class="flex items-center justify-center gap-3 bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-500 transition-colors w-full md:w-auto">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                            <span>Unirse a Discord (Obligatorio)</span>
+                        </a>
+                        <a href="https://chat.whatsapp.com/JcJIqz6xVLQBOsM0zSEJcK?mode=hqrt2" target="_blank" class="flex items-center justify-center gap-3 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-500 transition-colors w-full md:w-auto">
+                            <i data-lucide="message-square" class="w-5 h-5"></i>
+                            <span>Grupo de WhatsApp (Dudas)</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección Redes Sociales -->
+            <section class="tournament-section" data-category="todos">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Síguenos en Redes</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <a href="https://www.tiktok.com/@pixl_cm" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i data-lucide="film" class="w-5 h-5"></i>
+                            <span>TikTok</span>
+                        </a>
+                        <a href="https://www.instagram.com/rodricg30/" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://www.youtube.com/@PIXL_cm" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                            <span>YouTube</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modal: Crear Duelo Personalizado -->
+    <div id="create-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4" onclick="closeModal()">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-lg mx-auto p-6 relative fade-in" onclick="event.stopPropagation()">
+            <!-- Contenido del Modal (Formulario) -->
+            <div id="modal-form-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-white">Crear Duelo Personalizado</h2>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-white">&times;</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Tamaño Equipo -->
+                    <div>
+                        <label for="team-size" class="block text-sm font-medium text-gray-300 mb-2">Tamaño Equipo</label>
+                        <select id="team-size" class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="1v1">1v1</option>
+                            <option value="2v2">2v2</option>
+                            <option value="3v3">3v3</option>
+                            <option value="4v4">4v4</option>
+                        </select>
+                    </div>
+                    <!-- Modo de Duelo -->
+                    <div>
+                        <label for="duel-mode" class="block text-sm font-medium text-gray-300 mb-2">Modo de Duelo</label>
+                        <select id="duel-mode" class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <!-- Opciones 1v1 -->
+                            <option value="1v1 Build Fights" data-team-size="1v1">1v1 Build Fights</option>
+                            <option value="1v1 Speed Realistics" data-team-size="1v1">1v1 Speed Realistics</option>
+                            <option value="1v1 Rapid Zero Build" data-team-size="1v1">1v1 Rapid Zero Build</option>
+                            <option value="1v1 Piece Control" data-team-size="1v1">1v1 Piece Control</option>
+                            <!-- Opciones 2v2 -->
+                            <option value="2v2 Box Fights" data-team-size="2v2">2v2 Box Fights</option>
+                            <option value="2v2 Speed Realistics" data-team-size="2v2">2v2 Speed Realistics</option>
+                            <option value="2v2 Rapid Zero Build" data-team-size="2v2">2v2 Rapid Zero Build</option>
+                            <option value="2v2 Piece Control" data-team-size="2v2">2v2 Piece Control</option>
+                            <!-- Opciones 3v3 -->
+                            <option value="3v3 Box Fights" data-team-size="3v3">3v3 Box Fights</option>
+                            <option value="3v3 Speed Realistics" data-team-size="3v3">3v3 Speed Realistics</option>
+                            <option value="3v3 Piece Control" data-team-size="3v3">3v3 Piece Control</option>
+                            <!-- Opciones 4v4 -->
+                            <option value="4v4 Box Fights" data-team-size="4v4">4v4 Box Fights</option>
+                            <option value="PRO ZONE WARS" data-team-size="4v4">PRO ZONE WARS</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Apuesta por Jugador -->
+                <div class="mt-4">
+                    <label for="bet-amount" class="block text-sm font-medium text-gray-300 mb-2">Apuesta por Jugador (MXN)</label>
+                    <input type="number" id="bet-amount" placeholder="Ej: 50" class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+
+                <!-- Opciones 2v2+ -->
+                <div id="team-options" class="hidden mt-4 space-y-4">
+                    <!-- Nombre de Equipo -->
+                    <div>
+                        <label for="team-name" class="block text-sm font-medium text-gray-300 mb-2">Nombre de Equipo</label>
+                        <input type="text" id="team-name" placeholder="Ej: Los Pros" class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <!-- Quién Paga -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">¿Quién Paga?</label>
+                        <select id="payment-option" class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="individual">Pago Individual (Cada jugador)</option>
+                            <option value="team">Yo pago por mi equipo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <!-- Tipo de Premio -->
+                    <div>
+                        <label for="prize-type" class="block text-sm font-medium text-gray-300 mb-2">Tipo de Premio</label>
+                        <select id="prize-type" class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="cash">Efectivo (10% Comisión)</option>
+                            <option value="vbucks">Pavos (Sin Comisión)</option>
+                        </select>
+                    </div>
+                    <!-- Visibilidad -->
+                    <div>
+                        <label for="visibility" class="block text-sm font-medium text-gray-300 mb-2">Visibilidad</label>
+                        <select id="visibility" class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="public">Público (Buscar Oponente)</option>
+                            <option value="private">Contra Amigos</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Apuesta Negociable -->
+                <div class="mt-4 flex items-center">
+                    <input id="negotiable" type="checkbox" class="h-4 w-4 rounded bg-gray-700 border-gray-600 text-pink-600 focus:ring-pink-500">
+                    <label for="negotiable" class="ml-2 block text-sm text-gray-300">Apuesta Negociable (Abierto a negociar por más)</label>
+                </div>
+
+                <!-- Resumen de Pago -->
+                <div class="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
+                    <h3 class="text-lg font-bold text-white mb-3">Resumen del Duelo</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between text-gray-400">
+                            <span>Bote Total Estimado:</span>
+                            <span id="total-pot" class="font-bold text-white">--</span>
+                        </div>
+                        <div class="flex justify-between text-gray-400">
+                            <span>Comisión (10%):</span>
+                            <span id="commission-fee" class="font-bold text-white">--</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span class="font-bold text-white">Premio Estimado:</span>
+                            <span id="final-prize" class="font-bold text-yellow-400">--</span>
+                        </div>
+                        <div class="border-t border-gray-700 my-2"></div>
+                        <div class="flex justify-between text-base">
+                            <span class="font-bold text-gray-300">Total a Pagar (Tú):</span>
+                            <span id="your-payment" class="font-bold text-white">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="confirm-duel-btn" class="w-full text-center rgb-bg-anim text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition mt-6">
+                    Confirmar y Generar Código
+                </button>
+            </div>
+
+            <!-- Contenido del Modal (Tarjeta de Duelo) -->
+            <div id="modal-voucher-content" class="hidden">
+                <div class="text-center p-4 bg-gray-800 rounded-2xl border border-pink-500 shadow-lg" id="voucher-card">
+                    <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" class="w-20 h-20 mx-auto mb-4">
+                    <h2 class="text-2xl font-bold text-white">¡Duelo Creado!</h2>
+                    <p class="text-gray-400 mb-4">Toma captura de esta tarjeta y compártela.</p>
+                    
+                    <div id="negotiable-badge" class="hidden my-3">
+                        <span class="text-xs font-bold text-black bg-yellow-400 px-3 py-1 rounded-full animate-pulse">¡APUESTA ABIERTA! (Negociable)</span>
+                    </div>
+
+                    <div class="text-left space-y-2 my-4">
+                        <p class="text-gray-400"><strong>Modo:</strong> <span id="voucher-mode" class="font-bold text-white"></span></p>
+                        <p class="text-gray-400"><strong>Apuesta (p/p):</strong> <span id="voucher-bet" class="font-bold text-white"></span></p>
+                        <p class="text-gray-400"><strong>Premio Estimado:</strong> <span id="voucher-prize" class="font-bold text-yellow-400"></span></p>
+                        <p class="text-gray-400"><strong>Visibilidad:</strong> <span id="voucher-visibility" class="font-bold text-white"></span></p>
+                    </div>
+
+                    <p class="text-gray-300 mb-2">Tu Código de Equipo:</p>
+                    <div class="relative bg-gray-900 rounded-lg p-3">
+                        <code id="voucher-code" class="text-lg font-bold text-pink-400 break-all"></code>
+                        <button onclick="copyToClipboard()" class="absolute top-2 right-2 text-gray-400 hover:text-white">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    
+                    <p id="voucher-instructions" class="text-sm text-gray-400 mt-4"></p>
+                </div>
+                
+                <button onclick="closeModal()" class="w-full text-center bg-gray-700 text-white font-bold py-3 px-5 rounded-lg hover:bg-gray-600 transition mt-4">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal: Detalles del Torneo -->
+    <div id="details-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4" onclick="closeDetailsModal()">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-md mx-auto relative fade-in" onclick="event.stopPropagation()">
+            <img id="details-modal-img" src="" alt="Imagen del Torneo" class="w-full h-48 object-cover rounded-t-2xl">
+            <button onclick="closeDetailsModal()" class="absolute top-3 right-3 text-white bg-black/50 rounded-full p-1">&times;</button>
+            <div class="p-6">
+                <h2 id="details-modal-title" class="text-2xl font-bold text-white mb-4"></h2>
+                <p id="details-modal-desc" class="text-gray-300 mb-6"></p>
+                <h3 class="text-lg font-bold text-white mb-3">Detalles del Torneo</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm mb-6">
+                    <div>
+                        <span class="block text-gray-500 font-bold">MODALIDAD</span>
+                        <span id="details-modal-mode" class="text-white font-semibold"></span>
+                    </div>
+                    <div>
+                        <span class="block text-gray-500 font-bold">COSTO</span>
+                        <span id="details-modal-cost" class="text-white font-semibold"></span>
+                    </div>
+                    <div>
+                        <span class="block text-gray-500 font-bold">REGIÓN</span>
+                        <span id="details-modal-region" class="text-white font-semibold"></span>
+                    </div>
+                    <div>
+                        <span class="block text-gray-500 font-bold">JUGADORES</span>
+                        <span id="details-modal-players" class="text-white font-semibold"></span>
+                    </div>
+                </div>
+                <a id="details-modal-link" href="" target="_blank" class="block w-full text-center bg-gradient-to-r from-pink-600 to-yellow-500 text-white font-bold py-3 px-5 rounded-lg hover:opacity-90 transition">
+                    Inscripción (Solo Discord)
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Barra de Navegación Inferior (Móvil) -->
+    <nav class="bottom-nav-glass md:hidden flex justify-around py-3 text-xs text-gray-400 z-50">
+        <!-- Ícono 1: Fortnite (ACTIVO) -->
+        <a href="index.html" class="nav-item-active flex flex-col items-center justify-center text-center w-1/3 transition-transform duration-200 transform hover:scale-105">
+            <i data-lucide="swords" class="w-6 h-6 mb-1"></i>
+            <span>Fortnite</span>
+        </a>
+        <!-- Ícono 2: Clash Royale (Inactivo) -->
+        <a href="clash.html" class="flex flex-col items-center justify-center text-center w-1/3 text-gray-400 hover:text-white transition-transform duration-200 transform hover:scale-105">
+            <i data-lucide="castle" class="w-6 h-6 mb-1"></i>
+            <span>Clash Royale</span>
+        </a>
+        <!-- Ícono 3: Reglas (Inactivo) -->
+        <a href="reglas.html" class="flex flex-col items-center justify-center text-center w-1/3 text-gray-400 hover:text-white transition-transform duration-200 transform hover:scale-105">
+            <i data-lucide="book-open" class="w-6 h-6 mb-1"></i>
+            <span>Reglas</span>
+        </a>
+    </nav>
+
+    <script>
+        // --- Constantes del DOM ---
+        const createModal = document.getElementById('create-modal');
+        const detailsModal = document.getElementById('details-modal');
+        const searchModal = document.getElementById('search-modal');
+        const notificationsPanel = document.getElementById('notifications-panel');
+        const modalFormContent = document.getElementById('modal-form-content');
+        const modalVoucherContent = document.getElementById('modal-voucher-content');
+
+        // --- Selectores de Formulario ---
+        const teamSizeSelect = document.getElementById('team-size');
+        const duelModeSelect = document.getElementById('duel-mode');
+        const betAmountInput = document.getElementById('bet-amount');
+        const teamOptions = document.getElementById('team-options');
+        const teamNameInput = document.getElementById('team-name');
+        const paymentOptionSelect = document.getElementById('payment-option');
+        const prizeTypeSelect = document.getElementById('prize-type');
+        const visibilitySelect = document.getElementById('visibility');
+        const negotiableCheckbox = document.getElementById('negotiable');
+
+        // --- Selectores de Resumen ---
+        const totalPotEl = document.getElementById('total-pot');
+        const commissionFeeEl = document.getElementById('commission-fee');
+        const finalPrizeEl = document.getElementById('final-prize');
+        const yourPaymentEl = document.getElementById('your-payment');
+
+        // --- Selectores de Tarjeta (Voucher) ---
+        const voucherCard = document.getElementById('voucher-card');
+        const voucherMode = document.getElementById('voucher-mode');
+        const voucherBet = document.getElementById('voucher-bet');
+        const voucherPrize = document.getElementById('voucher-prize');
+        const voucherVisibility = document.getElementById('voucher-visibility');
+        const voucherCode = document.getElementById('voucher-code');
+        const voucherInstructions = document.getElementById('voucher-instructions');
+        const negotiableBadge = document.getElementById('negotiable-badge');
+
+        // --- Tasa de Conversión ---
+        const VBUCKS_RATE = 10; // 1 MXN = 10 Pavos
+
+        // --- Funciones de Modales (Notificaciones, Búsqueda, Detalles) ---
+        function openNotifications() { notificationsPanel.classList.remove('hidden'); }
+        function closeNotifications() { notificationsPanel.classList.add('hidden'); }
+        function openSearchModal() { searchModal.classList.remove('hidden'); document.getElementById('search-input').focus(); }
+        function closeSearchModal() { searchModal.classList.add('hidden'); }
+        
+        function openDetailsModal(title, img, desc, link, mode, cost, region, currentPlayers, maxPlayers) {
+            document.getElementById('details-modal-title').textContent = title;
+            document.getElementById('details-modal-img').src = img;
+            document.getElementById('details-modal-desc').textContent = desc;
+            document.getElementById('details-modal-link').href = link;
+            document.getElementById('details-modal-mode').textContent = mode;
+            document.getElementById('details-modal-cost').textContent = cost;
+            document.getElementById('details-modal-region').textContent = region;
+            if (maxPlayers > 0) {
+                document.getElementById('details-modal-players').textContent = `${currentPlayers} / ${maxPlayers}`;
+            } else {
+                document.getElementById('details-modal-players').textContent = 'N/A';
+            }
+            detailsModal.classList.remove('hidden');
+        }
+        function closeDetailsModal() { detailsModal.classList.add('hidden'); }
+
+        // --- Funciones del Modal Principal (Crear Duelo) ---
+        function openModal() {
+            modalFormContent.classList.remove('hidden');
+            modalVoucherContent.classList.add('hidden');
+            updateModalLogic(); // Asegurarse de que el modal esté actualizado
+            createModal.classList.remove('hidden');
+        }
+        
+        function openModalWithMap(teamSize, mode) {
+            teamSizeSelect.value = teamSize;
+            updateModalLogic(); // Actualiza las opciones de modo PRIMERO
+            duelModeSelect.value = mode; // AHORA selecciona el modo
+            openModal();
+        }
+        
+        function closeModal() {
+            createModal.classList.add('hidden');
+        }
+
+        // --- Lógica de Filtro de Mapas (¡BUG CORREGIDO!) ---
+        function filterDuelModes() {
+            const selectedTeamSize = teamSizeSelect.value;
+            const allOptions = duelModeSelect.querySelectorAll('option');
+            
+            allOptions.forEach(option => {
+                if (option.dataset.teamSize === selectedTeamSize) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+
+            // Asegurarse de que el valor seleccionado sea uno válido
+            if (duelModeSelect.querySelector('option[style="display: block;"]')) {
+                 if (duelModeSelect.options[duelModeSelect.selectedIndex].style.display === 'none') {
+                    duelModeSelect.value = duelModeSelect.querySelector('option[style="display: block;"]').value;
+                }
+            }
+        }
+        
+        // --- Lógica de Cálculo de Pagos ---
+        function updatePaymentSummary() {
+            const teamSize = parseInt(teamSizeSelect.value.replace('v', '')); // 1, 2, 3, 4
+            const totalPlayers = teamSize * 2; // 2, 4, 6, 8
+            const bet = parseFloat(betAmountInput.value) || 0;
+            const prizeType = prizeTypeSelect.value;
+            const paymentOption = paymentOptionSelect.value;
+
+            const totalPot = bet * totalPlayers;
+            let commission = 0;
+            let finalPrize = 0;
+
+            if (prizeType === 'cash') {
+                commission = totalPot * 0.10;
+                finalPrize = totalPot - commission;
+                finalPrizeEl.textContent = `$${finalPrize.toFixed(2)} MXN`;
+                commissionFeeEl.textContent = `-$${commission.toFixed(2)} MXN`;
+            } else { // vbucks
+                commission = 0;
+                finalPrize = totalPot * VBUCKS_RATE;
+                finalPrizeEl.textContent = `${finalPrize.toLocaleString()} Pavos`;
+                commissionFeeEl.textContent = "$0.00 MXN";
+            }
+            
+            totalPotEl.textContent = `$${totalPot.toFixed(2)} MXN`;
+
+            let payment = 0;
+            if (teamSize > 1 && paymentOption === 'team') {
+                payment = bet * teamSize;
+            } else {
+                payment = bet;
+            }
+            yourPaymentEl.textContent = `$${payment.toFixed(2)} MXN`;
+        }
+
+        // --- Lógica de Actualización del Modal ---
+        function updateModalLogic() {
+            const teamSize = teamSizeSelect.value;
+            if (teamSize === '1v1') {
+                teamOptions.classList.add('hidden');
+            } else {
+                teamOptions.classList.remove('hidden');
+            }
+            filterDuelModes();
+            updatePaymentSummary();
+        }
+
+        // --- Generar Tarjeta (Voucher) ---
+        function generateVoucher() {
+            const teamSize = teamSizeSelect.value;
+            const mode = duelModeSelect.value;
+            const bet = parseFloat(betAmountInput.value) || 0;
+            const prize = finalPrizeEl.textContent;
+            const visibility = visibilitySelect.options[visibilitySelect.selectedIndex].text;
+            const teamName = teamNameInput.value || `Equipo-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+            const isNegotiable = negotiableCheckbox.checked;
+
+            voucherMode.textContent = `${teamSize.toUpperCase()} - ${mode}`;
+            voucherBet.textContent = `$${bet.toFixed(2)} MXN (por jugador)`;
+            voucherPrize.textContent = prize;
+            voucherVisibility.textContent = visibility;
+
+            if (isNegotiable) {
+                negotiableBadge.classList.remove('hidden');
+            } else {
+                negotiableBadge.classList.add('hidden');
+            }
+            
+            const randomCode = Math.random().toString(36).substr(2, 4).toUpperCase();
+            let code = `semicompañero${teamSize}-${teamName.replace(/\s+/g, '')}-${randomCode}`;
+            voucherCode.textContent = code;
+
+            if (visibilitySelect.value === 'public') {
+                voucherInstructions.textContent = "¡Publica esta tarjeta en Discord para encontrar un oponente!";
+            } else {
+                voucherInstructions.textContent = "¡Envía este código a tus amigos para que se unan!";
+            }
+
+            modalFormContent.classList.add('hidden');
+            modalVoucherContent.classList.remove('hidden');
+        }
+
+        // --- Copiar al Portapapeles (Método antiguo) ---
+        function copyToClipboard() {
+            const code = voucherCode.textContent;
+            const el = document.createElement('textarea');
+            el.value = code;
+            document.body.appendChild(el);
+            el.select();
+            try {
+                document.execCommand('copy');
+                alert('¡Código copiado!');
+            } catch (err) {
+                alert('Error al copiar. Por favor, copia manualmente.');
+            }
+            document.body.removeChild(el);
+        }
+
+        // --- Filtro de Búsqueda ---
+        function filterContent() {
+            const input = document.getElementById('search-input');
+            const filter = input.value.toLowerCase();
+            const list = document.getElementById('tournament-list');
+            const items = list.getElementsByClassName('searchable-item');
+
+            for (let i = 0; i < items.length; i++) {
+                let title = items[i].dataset.title.toLowerCase();
+                if (title.includes(filter)) {
+                    items[i].style.display = "";
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+        }
+
+        // --- Filtro de Categorías ---
+        function filterCategories(filter) {
+            const list = document.getElementById('tournament-list');
+            const sections = list.getElementsByClassName('tournament-section');
+            
+            for (let i = 0; i < sections.length; i++) {
+                if (filter === 'todos' || sections[i].dataset.category.includes(filter)) {
+                    sections[i].style.display = "block";
+                } else {
+                    sections[i].style.display = "none";
+                }
+            }
+            
+            // Estilo de botones
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(button => {
+                if (button.dataset.filter === filter) {
+                    button.classList.remove('nav-category-glass', 'text-gray-300');
+                    button.classList.add('nav-category-glow', 'text-white');
+                } else {
+                    button.classList.remove('nav-category-glow', 'text-white');
+                    button.classList.add('nav-category-glass', 'text-gray-300');
+                }
+            });
+        }
+
+        // --- Event Listeners ---
+        window.onload = function () {
+            // Splash Screen
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                }, 500); // Coincide con la transición de opacidad
+            }, 2500); // Duración total de la carga
+
+            lucide.createIcons();
+            
+            // Listeners del Modal
+            teamSizeSelect.addEventListener('change', updateModalLogic);
+            betAmountInput.addEventListener('input', updatePaymentSummary);
+            prizeTypeSelect.addEventListener('change', updatePaymentSummary);
+            paymentOptionSelect.addEventListener('change', updatePaymentSummary);
+            document.getElementById('confirm-duel-btn').addEventListener('click', generateVoucher);
+            
+            // Listeners de Filtros
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterCategories(button.dataset.filter);
+                });
+            });
+
+            // Estado inicial
+            filterCategories('todos');
+            updateModalLogic(); // Para inicializar el modal correctamente
+        };
+    </script>
+</body>
+</html>
