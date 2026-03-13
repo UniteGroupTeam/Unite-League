@@ -94,7 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // --- Auth System Logic ---
 let isLoginMode = true;
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQMaEOkRMy1mpeQJv-k4dIAcYFwppEeUEnVG-ktDjZSK2W5tAaJ7-RiJ573FeHidO1/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuqYXRy642LLRC9vVLeIq0-LJI1xjUU1G0bVLFzaZIsiWIDon3V7tiicjbm2V3t97Z/exec';
 
 function initAuth() {
     const authModalHTML = `
@@ -117,7 +117,7 @@ function initAuth() {
             
             <p class="text-center text-gray-400 mt-4 text-sm">
                 <span id="auth-toggle-text">¿No tienes cuenta?</span> 
-                <button type="button" onclick="toggleAuthMode()" class="text-pink-500 font-bold ml-1 hover:underline">Regístrate</button>
+                <button id="auth-toggle-btn" type="button" onclick="toggleAuthMode()" class="text-pink-500 font-bold ml-1 hover:underline">Regístrate</button>
             </p>
         </div>
     </div>`;
@@ -144,7 +144,32 @@ function openLoginModal() {
         }
         return;
     }
+    // Reset to login mode whenever we open the modal
+    isLoginMode = true;
+    updateAuthUI();
     document.getElementById('auth-modal').classList.remove('hidden');
+}
+
+function updateAuthUI() {
+    document.getElementById('auth-title').innerText = isLoginMode ? "Iniciar Sesión" : "Crear Cuenta";
+    document.getElementById('auth-submit-btn').innerText = isLoginMode ? "Entrar" : "Registrarse";
+    document.getElementById('auth-toggle-text').innerText = isLoginMode ? "¿No tienes cuenta?" : "¿Ya tienes cuenta?";
+    const toggleBtn = document.getElementById('auth-toggle-btn');
+    if (toggleBtn) {
+        toggleBtn.innerText = isLoginMode ? "Regístrate" : "Inicia Sesión";
+    }
+    
+    // Mostrar u ocultar campo de usuario de Fortnite
+    const fortniteInput = document.getElementById('auth-fortnite');
+    if (fortniteInput) {
+        if(isLoginMode) {
+            fortniteInput.classList.add('hidden');
+            fortniteInput.removeAttribute('required');
+        } else {
+            fortniteInput.classList.remove('hidden');
+            fortniteInput.setAttribute('required', 'true');
+        }
+    }
 }
 
 function closeLoginModal() {
@@ -153,19 +178,7 @@ function closeLoginModal() {
 
 function toggleAuthMode() {
     isLoginMode = !isLoginMode;
-    document.getElementById('auth-title').innerText = isLoginMode ? "Iniciar Sesión" : "Crear Cuenta";
-    document.getElementById('auth-submit-btn').innerText = isLoginMode ? "Entrar" : "Registrarse";
-    document.getElementById('auth-toggle-text').innerText = isLoginMode ? "¿No tienes cuenta?" : "¿Ya tienes cuenta?";
-    
-    // Mostrar u ocultar campo de usuario de Fortnite
-    const fortniteInput = document.getElementById('auth-fortnite');
-    if(isLoginMode) {
-        fortniteInput.classList.add('hidden');
-        fortniteInput.removeAttribute('required');
-    } else {
-        fortniteInput.classList.remove('hidden');
-        fortniteInput.setAttribute('required', 'true');
-    }
+    updateAuthUI();
 }
 
 function updateAuthBtn(isLoggedIn, token = "") {
@@ -191,44 +204,53 @@ function updateAuthBtn(isLoggedIn, token = "") {
 
 async function handleAuth(event) {
     event.preventDefault();
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
-    const fortniteUser = document.getElementById('auth-fortnite').value;
     const btn = document.getElementById('auth-submit-btn');
     const originalText = btn.innerText;
     
-    btn.innerText = "Cargando...";
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    const fortniteUser = document.getElementById('auth-fortnite').value;
+
+    btn.innerText = "Verificando...";
     btn.classList.add('opacity-50', 'cursor-not-allowed');
     btn.disabled = true;
 
-    try {
-        const payload = {
-            action: isLoginMode ? 'login' : 'register',
-            email: email,
-            password: password
-        };
-        
-        if (!isLoginMode) {
-            payload.fortniteUser = fortniteUser;
-        }
+    const payload = {
+        action: isLoginMode ? 'login' : 'register',
+        email: email,
+        password: password,
+        fortniteUser: fortniteUser
+    };
 
+    try {
+        // Volvemos al método seguro para poder leer la respuesta (éxito/fallo)
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             body: JSON.stringify(payload)
         });
 
+        // Google Apps Script devuelve un JSON que debemos procesar
         const result = await response.json();
-        alert(result.message);
-
+        
         if (result.success) {
-            closeLoginModal();
             if (isLoginMode) {
                 localStorage.setItem('userToken', result.token);
                 updateAuthBtn(true, result.token);
+                closeLoginModal();
+                alert("¡Bienvenido de nuevo!");
+            } else {
+                alert("¡Registro exitoso! Por favor inicia sesión.");
+                isLoginMode = true;
+                updateAuthUI();
             }
+        } else {
+            // Si el servidor dice que los datos son incorrectos, mostramos el error y NO dejamos entrar
+            alert(result.message);
         }
     } catch (error) {
-        alert("Error de conexión con el servidor. Por favor intenta más tarde.");
+        console.error("Auth Error:", error);
+        // Si hay un error de red o de Google, avisamos al usuario
+        alert("Error de validación. Asegúrate de que tus datos sean correctos.");
     } finally {
         btn.innerText = originalText;
         btn.classList.remove('opacity-50', 'cursor-not-allowed');
