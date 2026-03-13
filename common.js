@@ -244,3 +244,63 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.log('Error al registrar Service Worker: ', err));
     });
 }
+
+// Lógica para el botón de Instalación PWA (App)
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevenir que aparezca el banner por defecto (mini-infobar)
+    e.preventDefault();
+    // Guardar el evento para dispararlo luego
+    deferredPrompt = e;
+    
+    // Crear el banner bonito si no existe
+    if (!document.getElementById('pwa-install-banner')) {
+        const pwaBanner = document.createElement('div');
+        pwaBanner.id = 'pwa-install-banner';
+        // Diseño de botón flotante atractivo por encima de la barra inferior (bottom-20)
+        pwaBanner.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-5 py-3 rounded-full shadow-2xl z-50 flex items-center gap-3 cursor-pointer hover:scale-105 transition-transform w-[90%] max-w-sm justify-between border border-pink-400/50';
+        pwaBanner.innerHTML = `
+            <div class="flex items-center gap-3">
+                <i data-lucide="smartphone" class="w-6 h-6 animate-pulse"></i>
+                <div class="flex flex-col">
+                    <span class="font-bold text-sm leading-tight">Instalar Unite League</span>
+                    <span class="text-xs text-white/80">Acceso rápido y sin navegador</span>
+                </div>
+            </div>
+            <button id="pwa-close-btn" class="p-2 hover:bg-white/20 rounded-full transition-colors">
+                <i data-lucide="x" class="w-4 h-4 text-white"></i>
+            </button>
+        `;
+        
+        document.body.appendChild(pwaBanner);
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        
+        // Manejar el clic para instalar o cerrar
+        pwaBanner.addEventListener('click', async (event) => {
+            if (event.target.closest('#pwa-close-btn')) {
+                // Si tocó la 'X', ocultamos el banner
+                pwaBanner.style.display = 'none';
+                return;
+            }
+            
+            // Si tocó el resto del banner, preguntamos si quiere instalar
+            if (deferredPrompt) {
+                pwaBanner.style.display = 'none';
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('El usuario aceptó instalar la App');
+                }
+                deferredPrompt = null;
+            }
+        });
+    }
+});
+
+// Evento cuando la app ya se instaló exitosamente
+window.addEventListener('appinstalled', (evt) => {
+    console.log('App de Unite League fue instalada!');
+    const banner = document.getElementById('pwa-install-banner');
+    if(banner) banner.style.display = 'none';
+});
