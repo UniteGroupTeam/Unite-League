@@ -1,0 +1,21 @@
+{
+  "name": "Unite League",
+  "short_name": "Unite",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#ec4899",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/sXTC0BS.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/sXTC0BS.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait"
+}

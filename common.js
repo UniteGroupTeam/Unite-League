@@ -235,3 +235,12 @@ async function handleAuth(event) {
         btn.disabled = false;
     }
 }
+
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker Registrado: ', reg.scope))
+            .catch(err => console.log('Error al registrar Service Worker: ', err));
+    });
+}
