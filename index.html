@@ -16,53 +16,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Exo 2', sans-serif; background-color: #111111; color: #e5e7eb; padding-bottom: 80px; }
-        .rgb-text { background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: slideGradient 3s linear infinite; }
-        .rgb-border-anim { border: 2px solid transparent; border-image: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077) 1; border-image-slice: 1; animation: slideGradient 3s linear infinite; }
-        .rgb-bg-anim { background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077); background-size: 200% auto; animation: slideGradient 3s linear infinite; }
-        .rgb-glow { filter: drop-shadow(0 0 8px rgba(255, 0, 119, 0.7)); }
-        .rgb-glow-blue { filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.7)); }
-        @keyframes slideGradient { to { background-position: 200% center; } }
-        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px 5px rgba(255, 0, 119, 0.7); } 50% { box-shadow: 0 0 25px 10px rgba(0, 119, 255, 0.7); } }
-        .pulse-btn { animation: pulse-glow 2.5s infinite; }
-        .nav-category-glow { background: linear-gradient(90deg, #ff0077, #7700ff); box-shadow: 0 0 15px 2px rgba(255, 0, 119, 0.5); }
-        .nav-category-glow-blue { background: #0077ff; box-shadow: 0 0 15px 2px rgba(0, 119, 255, 0.5); }
-        .nav-category-glass { background: rgba(31, 41, 55, 0.5); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); }
-        .modal-bg { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0a0a0a; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.5s ease-out; }
-        #splash-logo { width: 120px; animation: pulse-rgb-splash 2s infinite; }
-        .loader-bar { width: 150px; height: 4px; background-color: #333; border-radius: 2px; overflow: hidden; margin-top: 20px; }
-        .loader-bar-inner { width: 100%; height: 100%; background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff); animation: loading 2.5s ease-out forwards; }
-        @keyframes loading { from { width: 0%; } to { width: 100%; } }
-        @keyframes pulse-rgb-splash { 0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 0, 119, 0.7)); } 50% { filter: drop-shadow(0 0 20px rgba(0, 119, 255, 0.7)); } }
-        .bottom-nav-glass { background: rgba(17, 17, 17, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.05); position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; border-radius: 1.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 50; }
-        .nav-item-active { position: relative; color: #ff0077; }
-        .nav-item-active::before { content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background-color: #ff0077; border-radius: 50%; z-index: -1; opacity: 0.15; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes popIn { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 0.15; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes pulse-logo-aura { 0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 0, 119, 0.8)); } 50% { filter: drop-shadow(0 0 12px rgba(0, 119, 255, 0.8)); } }
-        .logo-aura { animation: pulse-logo-aura 3s infinite; }
-        /* Ocultar scrollbar */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body class="antialiased">
 
     <!-- Pantalla de Carga -->
     <div id="splash-screen">
         <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" id="splash-logo">
-        <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+        <div class="loader-ring"></div>
     </div>
 
     <!-- Barra de Navegación Superior -->
     <nav class="sticky top-0 z-40 bg-gray-950/90 backdrop-blur-md px-4 py-3 flex justify-between items-center border-b border-gray-800/50">
-        <!-- Íconos de Juego (PC) -->
-        <div class="hidden md:flex items-center gap-4">
+        <!-- Íconos de Navegación Izquierda (PC) -->
+        <div class="hidden md:flex items-center gap-5">
             <!-- Fortnite (Activo) -->
             <a href="index.html" class="relative text-pink-500" title="Fortnite">
                 <i data-lucide="swords" class="w-6 h-6"></i>
@@ -71,6 +38,10 @@
             <!-- Clash Royale (Inactivo) -->
             <a href="clash.html" class="text-gray-400 hover:text-white transition" title="Clash Royale">
                 <i data-lucide="castle" class="w-6 h-6"></i>
+            </a>
+            <!-- Reglas (Inactivo) -->
+            <a href="reglas.html" class="text-gray-400 hover:text-white transition" title="Reglas">
+                <i data-lucide="book-open" class="w-6 h-6"></i>
             </a>
         </div>
         <!-- Ícono de Búsqueda (Móvil) -->
@@ -83,7 +54,7 @@
             <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" class="w-8 h-8 logo-aura">
             <span class="text-xl font-bold tracking-tighter text-white">LEAGUE</span>
         </a>
-        <!-- Iconos Derecha (Campana y Búsqueda PC) -->
+        <!-- Iconos Derecha (Campana y Búsqueda PC y Usuario) -->
         <div class="flex items-center gap-4">
             <button onclick="openSearchModal()" class="text-gray-400 hover:text-white transition hidden md:block">
                 <i data-lucide="search" class="w-6 h-6"></i>
@@ -91,6 +62,9 @@
             <button onclick="openNotifications()" class="text-gray-400 hover:text-white transition relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
                 <span class="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-full border border-gray-950"></span>
+            </button>
+            <button id="nav-auth-btn" onclick="openLoginModal()" class="text-white bg-pink-600 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold hover:bg-pink-500 transition text-sm">
+                Entrar
             </button>
         </div>
     </nav>
@@ -118,16 +92,44 @@
         </div>
     </div>
     
-    <!-- Modal de Búsqueda (Oculto) -->
-    <div id="search-modal" class="hidden fixed top-0 left-0 w-full h-full z-50 modal-bg" onclick="closeSearchModal()">
-        <div class="absolute top-20 left-1/2 -translate-x-1/2 w-11/12 max-w-lg bg-gray-900 rounded-2xl shadow-lg border border-gray-800 p-4 fade-in" onclick="event.stopPropagation()">
-            <h3 class="text-lg font-bold text-white mb-4">Buscar Torneos</h3>
-            <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Buscar por nombre o modo (ej. 'Box Fight', 'Zero Build')" class="w-full bg-gray-800 text-white placeholder-gray-500 rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
+    <!-- Panel de Búsqueda (Desplegable) -->
+    <div id="search-modal" class="hidden fixed top-16 left-0 w-full z-40 bg-gray-950/95 backdrop-blur-md border-b border-gray-800 p-4 fade-in shadow-xl">
+        <div class="max-w-3xl mx-auto flex items-center gap-3 relative">
+            <i data-lucide="search" class="w-5 h-5 text-gray-500 absolute left-4"></i>
+            <input type="text" id="search-input" onkeyup="filterItems('search-input', 'tournament-list', 'searchable-item')" placeholder="Buscar torneos, modos, ej. 'Battle Royale'..." class="w-full bg-gray-900 text-white placeholder-gray-500 rounded-lg pl-12 pr-12 py-3 border border-gray-800 focus:outline-none focus:border-pink-500 transition-colors">
+            <button onclick="closeSearchModal()" class="absolute right-4 text-gray-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
         </div>
     </div>
 
     <!-- Contenido Principal -->
-    <main class="p-4 fade-in">
+    <main class="fade-in">
+        <!-- Sección Hero con Video de Fondo -->
+        <div class="hero-video-container -mt-[1px]"> <!-- Margen negativo para emparejar con el header opaco -->
+            <video class="hero-video" autoplay loop muted playsinline>
+                <source src="https://i.imgur.com/qa52dp9.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="text-4xl md:text-6xl font-black text-white mb-4 tracking-tighter">
+                    COMPITE Y GANA EN <span class="rgb-text uppercase">Unite League</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-8 font-medium">
+                    La liga definitiva de Fortnite y Clash Royale. Participa en torneos semanales, crea duelos automatizados contra otros jugadores de tu nivel, y gana premios reales. Con un sistema de emparejamiento fácil y rápido por Discord. ¿Estás listo para demostrar tu nivel?
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="openLoginModal()" class="pulse-btn rgb-bg-anim text-white font-bold py-3 px-8 rounded-full text-lg hover:opacity-90 transition-all shadow-lg">
+                        Únete Ahora
+                    </button>
+                    <a href="#categorias-scroll" class="bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-all shadow-lg">
+                        Ver Torneos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4">
         <!-- Botón Crear Duelo Fijo -->
         <div class="fixed bottom-24 md:bottom-6 right-4 z-30">
             <button onclick="openModal()" class="pulse-btn rgb-bg-anim text-white font-bold rounded-full w-16 h-16 flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
@@ -136,9 +138,9 @@
         </div>
 
         <!-- Categorías -->
-        <nav class="sticky top-16 md:top-auto md:relative bg-[#111111] md:bg-transparent z-30 py-3 md:py-0 mb-4">
+        <nav id="categorias-scroll" class="sticky top-16 md:top-auto md:relative bg-[#111111] md:bg-transparent z-30 py-3 md:py-0 mb-4 transition-all" style="scroll-margin-top: 80px;">
             <div class="flex justify-center">
-                <div id="categories-scroll" class="flex gap-2 items-center overflow-x-auto no-scrollbar px-4 md:px-0 md:justify-center md:flex-wrap">
+                <div class="flex gap-2 items-center overflow-x-auto no-scrollbar px-4 md:px-0 md:justify-center md:flex-wrap">
                     <button data-filter="todos" class="category-btn nav-category-glow text-white font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">Todos</button>
                     <button data-filter="br" class="category-btn nav-category-glass text-gray-300 font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">Battle Royale</button>
                     <button data-filter="1v1" class="category-btn nav-category-glass text-gray-300 font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 whitespace-nowrap">1v1</button>
@@ -158,13 +160,13 @@
                 <h2 class="text-2xl font-bold text-white mb-4 tracking-tight">TORNEOS PRINCIPALES</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Torneo Springfield -->
-                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Springfield Battle Royale BR Cero Construcción Recarga Orígenes">
-                        <div onclick="openDetailsModal('Springfield Battle Royale', 'https://i.imgur.com/AtkPcwT.png', '¡Lánzate desde el autobús de batalla a... ¿Springfield? En la isla de Springfield, de 80 jugadores, caen rosquillas del cielo y la central nuclear está a puntito de colapsar, pero tranqui: todo va bien. Prepárate para un mes lleno de chistes, artilugios y cortos de animación de Los Simpson.', 'https://discord.gg/nszDU2wHez', 'Solitarios', '$4 MXN (Entrada)', 'NA-Central', 3, 100)"
-                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/AtkPcwT.png');">
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Battle Royale BR Cero Construcción Recarga Orígenes">
+                        <div onclick="openDetailsModal('Battle Royale', 'https://i.imgur.com/rCrnSlW.png', '¡El momento de la verdad se cierne sobre la isla! Surfea la tormenta hasta la soleada Costa Dorada, donde ha aparecido una presencia malévola... ¡Juega en una isla en constante cambio con 99 personas más para vivir la prueba definitiva de habilidad y estrategia en Battle Royale de Fortnite! Sobrevive a la tormenta y supera a tus oponentes en velocidad, puntería y estrategia para ser la última persona en pie y alzarte con la codiciada victoria magistral.', 'https://discord.gg/nszDU2wHez', 'Solitarios', '$4 MXN (Entrada)', 'NA-Central', 3, 100)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/rCrnSlW.png');">
                         </div>
                         <div class="p-4">
                             <span class="text-xs font-bold text-yellow-500 bg-yellow-900/50 px-2 py-1 rounded">BATTLE ROYALE</span>
-                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Springfield Battle Royale</h3>
+                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Battle Royale</h3>
                             <div class="text-sm text-gray-400 mb-3">
                                 <span class="font-bold">$4 MXN</span> (Entrada) <span class="mx-2">|</span> <i data-lucide="server" class="w-4 h-4 inline-block -mt-1"></i> NA-Central
                             </div>
@@ -184,13 +186,13 @@
                         </div>
                     </div>
                     <!-- Torneo Cero Construcción -->
-                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Cero Construcción Springfield">
-                        <div onclick="openDetailsModal('Springfield Cero Construcción', 'https://i.imgur.com/bkrtoCa.png', 'Springfield Cero Construcción conserva toda la acción, botín y progreso del clásico Battle Royale, solo que sin construcción.', 'https://discord.gg/nszDU2wHez', 'Solitarios', 'Próximamente', 'NA-Central', 0, 0)"
-                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/bkrtoCa.png');">
+                    <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Battle Royale cero construccion">
+                        <div onclick="openDetailsModal('Battle Royale Cero Construcción', 'https://i.imgur.com/GZf7wAu.png', '¡Disfruta del trepidante Battle Royale pero sin tener que construir en Cero construcción! ¡Elimina oponentes y acaba en puestos altos en las partidas para llegar a Unreal en el modo Clasificatoria!', 'https://discord.gg/nszDU2wHez', 'Solitarios', 'Próximamente', 'NA-Central', 0, 0)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/GZf7wAu.png');">
                         </div>
                         <div class="p-4">
                             <span class="text-xs font-bold text-blue-500 bg-blue-900/50 px-2 py-1 rounded">CERO CONSTRUCCIÓN</span>
-                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Springfield Cero Construcción</h3>
+                            <h3 class="text-xl font-bold text-white mt-2 mb-2">Battle Royale Cero Construcción</h3>
                             <button disabled class="block w-full text-center bg-gray-700 text-gray-400 font-bold py-3 px-5 rounded-lg cursor-not-allowed">
                                 Próximamente (Anuncios en Discord)
                             </button>
@@ -198,8 +200,8 @@
                     </div>
                     <!-- Torneo Recarga -->
                     <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Recarga (Reload)">
-                        <div onclick="openDetailsModal('Modo Recarga (Reload)', 'https://i.imgur.com/BnWv01n.png', 'Recarga es un trepidante modo de juego de Battle Royale para 40 jugadores centrado únicamente en lograr la victoria junto a tu escuadrón. ¡Podrás reaparecer siempre que algún miembro de tu equipo siga en pie!', 'https://discord.gg/nszDU2wHez', 'Escuadrones', 'Próximamente', 'NA-Central', 0, 0)"
-                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/BnWv01n.png');">
+                        <div onclick="openDetailsModal('Modo Recarga (Reload)', 'https://i.imgur.com/wxawv6f.png', 'Recarga es un trepidante modo de juego de Battle Royale para 40 jugadores centrado únicamente en lograr la victoria junto a tu escuadrón. ¡Podrás reaparecer siempre que algún miembro de tu equipo siga en pie!', 'https://discord.gg/nszDU2wHez', 'Escuadrones', 'Próximamente', 'NA-Central', 0, 0)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/wxawv6f.png');">
                         </div>
                         <div class="p-4">
                             <span class="text-xs font-bold text-green-500 bg-green-900/50 px-2 py-1 rounded">RECARGA</span>
@@ -211,8 +213,8 @@
                     </div>
                     <!-- Torneo Orígenes -->
                     <div class="searchable-item bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 card-hover" data-title="Fortnite Orígenes (OG)">
-                        <div onclick="openDetailsModal('Fortnite: Orígenes', 'https://i.imgur.com/9VtXIia.png', 'Disfruta de los orígenes de Battle Royale en el Capítulo 1 - Temporada 6. ¡Salta del autobús y explora el mapa original, con el botín original y revive las temporadas originales!', 'https://discord.gg/nszDU2wHez', 'Escuadrones', 'Próximamente', 'NA-Central', 0, 0)"
-                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/9VtXIia.png');">
+                        <div onclick="openDetailsModal('Fortnite: Orígenes', 'https://i.imgur.com/AYsa7lC.png', 'Disfruta de los orígenes de Battle Royale en el Capítulo 1 - Temporada 6. ¡Salta del autobús y explora el mapa original, con el botín original y revive las temporadas originales!', 'https://discord.gg/nszDU2wHez', 'Escuadrones', 'Próximamente', 'NA-Central', 0, 0)"
+                             class="h-40 w-full bg-cover bg-center cursor-pointer" style="background-image: url('https://i.imgur.com/AYsa7lC.png');">
                         </div>
                         <div class="p-4">
                             <span class="text-xs font-bold text-purple-500 bg-purple-900/50 px-2 py-1 rounded">ORÍGENES (OG)</span>
@@ -392,29 +394,22 @@
             <section class="tournament-section" data-category="todos">
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Síguenos en Redes</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <a href="https://www.tiktok.com/@pixl_cm" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i data-lucide="film" class="w-5 h-5"></i>
-                            <span>TikTok</span>
-                        </a>
-                        <a href="https://www.instagram.com/rodricg30/" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i data-lucide="instagram" class="w-5 h-5"></i>
-                            <span>Instagram</span>
-                        </a>
-                        <a href="https://www.youtube.com/@PIXL_cm" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i data-lucide="youtube" class="w-5 h-5"></i>
-                            <span>YouTube</span>
+                    <div class="flex justify-center">
+                        <a href="https://www.instagram.com/rodricg30/" target="_blank" class="flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold py-3 px-10 rounded-lg hover:opacity-90 transition-opacity w-full md:w-auto shadow-lg shadow-pink-500/20">
+                            <i data-lucide="instagram" class="w-6 h-6"></i>
+                            <span>Síguenos en Instagram</span>
                         </a>
                     </div>
                 </div>
             </section>
 
         </div>
+        </div>
     </main>
 
     <!-- Modal: Crear Duelo Personalizado -->
     <div id="create-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4" onclick="closeModal()">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-lg mx-auto p-6 relative fade-in" onclick="event.stopPropagation()">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-lg mx-auto p-6 relative fade-in max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <!-- Contenido del Modal (Formulario) -->
             <div id="modal-form-content">
                 <div class="flex justify-between items-center mb-4">
@@ -573,7 +568,7 @@
     
     <!-- Modal: Detalles del Torneo -->
     <div id="details-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4" onclick="closeDetailsModal()">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-md mx-auto relative fade-in" onclick="event.stopPropagation()">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-md mx-auto relative fade-in max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <img id="details-modal-img" src="" alt="Imagen del Torneo" class="w-full h-48 object-cover rounded-t-2xl">
             <button onclick="closeDetailsModal()" class="absolute top-3 right-3 text-white bg-black/50 rounded-full p-1">&times;</button>
             <div class="p-6">
@@ -625,280 +620,8 @@
         </a>
     </nav>
 
-    <script>
-        // --- Constantes del DOM ---
-        const createModal = document.getElementById('create-modal');
-        const detailsModal = document.getElementById('details-modal');
-        const searchModal = document.getElementById('search-modal');
-        const notificationsPanel = document.getElementById('notifications-panel');
-        const modalFormContent = document.getElementById('modal-form-content');
-        const modalVoucherContent = document.getElementById('modal-voucher-content');
+    <script src="common.js"></script>
+    <script src="fortnite.js"></script>
 
-        // --- Selectores de Formulario ---
-        const teamSizeSelect = document.getElementById('team-size');
-        const duelModeSelect = document.getElementById('duel-mode');
-        const betAmountInput = document.getElementById('bet-amount');
-        const teamOptions = document.getElementById('team-options');
-        const teamNameInput = document.getElementById('team-name');
-        const paymentOptionSelect = document.getElementById('payment-option');
-        const prizeTypeSelect = document.getElementById('prize-type');
-        const visibilitySelect = document.getElementById('visibility');
-        const negotiableCheckbox = document.getElementById('negotiable');
-
-        // --- Selectores de Resumen ---
-        const totalPotEl = document.getElementById('total-pot');
-        const commissionFeeEl = document.getElementById('commission-fee');
-        const finalPrizeEl = document.getElementById('final-prize');
-        const yourPaymentEl = document.getElementById('your-payment');
-
-        // --- Selectores de Tarjeta (Voucher) ---
-        const voucherCard = document.getElementById('voucher-card');
-        const voucherMode = document.getElementById('voucher-mode');
-        const voucherBet = document.getElementById('voucher-bet');
-        const voucherPrize = document.getElementById('voucher-prize');
-        const voucherVisibility = document.getElementById('voucher-visibility');
-        const voucherCode = document.getElementById('voucher-code');
-        const voucherInstructions = document.getElementById('voucher-instructions');
-        const negotiableBadge = document.getElementById('negotiable-badge');
-
-        // --- Tasa de Conversión ---
-        const VBUCKS_RATE = 10; // 1 MXN = 10 Pavos
-
-        // --- Funciones de Modales (Notificaciones, Búsqueda, Detalles) ---
-        function openNotifications() { notificationsPanel.classList.remove('hidden'); }
-        function closeNotifications() { notificationsPanel.classList.add('hidden'); }
-        function openSearchModal() { searchModal.classList.remove('hidden'); document.getElementById('search-input').focus(); }
-        function closeSearchModal() { searchModal.classList.add('hidden'); }
-        
-        function openDetailsModal(title, img, desc, link, mode, cost, region, currentPlayers, maxPlayers) {
-            document.getElementById('details-modal-title').textContent = title;
-            document.getElementById('details-modal-img').src = img;
-            document.getElementById('details-modal-desc').textContent = desc;
-            document.getElementById('details-modal-link').href = link;
-            document.getElementById('details-modal-mode').textContent = mode;
-            document.getElementById('details-modal-cost').textContent = cost;
-            document.getElementById('details-modal-region').textContent = region;
-            if (maxPlayers > 0) {
-                document.getElementById('details-modal-players').textContent = `${currentPlayers} / ${maxPlayers}`;
-            } else {
-                document.getElementById('details-modal-players').textContent = 'N/A';
-            }
-            detailsModal.classList.remove('hidden');
-        }
-        function closeDetailsModal() { detailsModal.classList.add('hidden'); }
-
-        // --- Funciones del Modal Principal (Crear Duelo) ---
-        function openModal() {
-            modalFormContent.classList.remove('hidden');
-            modalVoucherContent.classList.add('hidden');
-            updateModalLogic(); // Asegurarse de que el modal esté actualizado
-            createModal.classList.remove('hidden');
-        }
-        
-        function openModalWithMap(teamSize, mode) {
-            teamSizeSelect.value = teamSize;
-            updateModalLogic(); // Actualiza las opciones de modo PRIMERO
-            duelModeSelect.value = mode; // AHORA selecciona el modo
-            openModal();
-        }
-        
-        function closeModal() {
-            createModal.classList.add('hidden');
-        }
-
-        // --- Lógica de Filtro de Mapas (¡BUG CORREGIDO!) ---
-        function filterDuelModes() {
-            const selectedTeamSize = teamSizeSelect.value;
-            const allOptions = duelModeSelect.querySelectorAll('option');
-            
-            allOptions.forEach(option => {
-                if (option.dataset.teamSize === selectedTeamSize) {
-                    option.style.display = 'block';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-
-            // Asegurarse de que el valor seleccionado sea uno válido
-            if (duelModeSelect.querySelector('option[style="display: block;"]')) {
-                 if (duelModeSelect.options[duelModeSelect.selectedIndex].style.display === 'none') {
-                    duelModeSelect.value = duelModeSelect.querySelector('option[style="display: block;"]').value;
-                }
-            }
-        }
-        
-        // --- Lógica de Cálculo de Pagos ---
-        function updatePaymentSummary() {
-            const teamSize = parseInt(teamSizeSelect.value.replace('v', '')); // 1, 2, 3, 4
-            const totalPlayers = teamSize * 2; // 2, 4, 6, 8
-            const bet = parseFloat(betAmountInput.value) || 0;
-            const prizeType = prizeTypeSelect.value;
-            const paymentOption = paymentOptionSelect.value;
-
-            const totalPot = bet * totalPlayers;
-            let commission = 0;
-            let finalPrize = 0;
-
-            if (prizeType === 'cash') {
-                commission = totalPot * 0.10;
-                finalPrize = totalPot - commission;
-                finalPrizeEl.textContent = `$${finalPrize.toFixed(2)} MXN`;
-                commissionFeeEl.textContent = `-$${commission.toFixed(2)} MXN`;
-            } else { // vbucks
-                commission = 0;
-                finalPrize = totalPot * VBUCKS_RATE;
-                finalPrizeEl.textContent = `${finalPrize.toLocaleString()} Pavos`;
-                commissionFeeEl.textContent = "$0.00 MXN";
-            }
-            
-            totalPotEl.textContent = `$${totalPot.toFixed(2)} MXN`;
-
-            let payment = 0;
-            if (teamSize > 1 && paymentOption === 'team') {
-                payment = bet * teamSize;
-            } else {
-                payment = bet;
-            }
-            yourPaymentEl.textContent = `$${payment.toFixed(2)} MXN`;
-        }
-
-        // --- Lógica de Actualización del Modal ---
-        function updateModalLogic() {
-            const teamSize = teamSizeSelect.value;
-            if (teamSize === '1v1') {
-                teamOptions.classList.add('hidden');
-            } else {
-                teamOptions.classList.remove('hidden');
-            }
-            filterDuelModes();
-            updatePaymentSummary();
-        }
-
-        // --- Generar Tarjeta (Voucher) ---
-        function generateVoucher() {
-            const teamSize = teamSizeSelect.value;
-            const mode = duelModeSelect.value;
-            const bet = parseFloat(betAmountInput.value) || 0;
-            const prize = finalPrizeEl.textContent;
-            const visibility = visibilitySelect.options[visibilitySelect.selectedIndex].text;
-            const teamName = teamNameInput.value || `Equipo-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
-            const isNegotiable = negotiableCheckbox.checked;
-
-            voucherMode.textContent = `${teamSize.toUpperCase()} - ${mode}`;
-            voucherBet.textContent = `$${bet.toFixed(2)} MXN (por jugador)`;
-            voucherPrize.textContent = prize;
-            voucherVisibility.textContent = visibility;
-
-            if (isNegotiable) {
-                negotiableBadge.classList.remove('hidden');
-            } else {
-                negotiableBadge.classList.add('hidden');
-            }
-            
-            const randomCode = Math.random().toString(36).substr(2, 4).toUpperCase();
-            let code = `semicompañero${teamSize}-${teamName.replace(/\s+/g, '')}-${randomCode}`;
-            voucherCode.textContent = code;
-
-            if (visibilitySelect.value === 'public') {
-                voucherInstructions.textContent = "¡Publica esta tarjeta en Discord para encontrar un oponente!";
-            } else {
-                voucherInstructions.textContent = "¡Envía este código a tus amigos para que se unan!";
-            }
-
-            modalFormContent.classList.add('hidden');
-            modalVoucherContent.classList.remove('hidden');
-        }
-
-        // --- Copiar al Portapapeles (Método antiguo) ---
-        function copyToClipboard() {
-            const code = voucherCode.textContent;
-            const el = document.createElement('textarea');
-            el.value = code;
-            document.body.appendChild(el);
-            el.select();
-            try {
-                document.execCommand('copy');
-                alert('¡Código copiado!');
-            } catch (err) {
-                alert('Error al copiar. Por favor, copia manualmente.');
-            }
-            document.body.removeChild(el);
-        }
-
-        // --- Filtro de Búsqueda ---
-        function filterContent() {
-            const input = document.getElementById('search-input');
-            const filter = input.value.toLowerCase();
-            const list = document.getElementById('tournament-list');
-            const items = list.getElementsByClassName('searchable-item');
-
-            for (let i = 0; i < items.length; i++) {
-                let title = items[i].dataset.title.toLowerCase();
-                if (title.includes(filter)) {
-                    items[i].style.display = "";
-                } else {
-                    items[i].style.display = "none";
-                }
-            }
-        }
-
-        // --- Filtro de Categorías ---
-        function filterCategories(filter) {
-            const list = document.getElementById('tournament-list');
-            const sections = list.getElementsByClassName('tournament-section');
-            
-            for (let i = 0; i < sections.length; i++) {
-                if (filter === 'todos' || sections[i].dataset.category.includes(filter)) {
-                    sections[i].style.display = "block";
-                } else {
-                    sections[i].style.display = "none";
-                }
-            }
-            
-            // Estilo de botones
-            const buttons = document.querySelectorAll('.category-btn');
-            buttons.forEach(button => {
-                if (button.dataset.filter === filter) {
-                    button.classList.remove('nav-category-glass', 'text-gray-300');
-                    button.classList.add('nav-category-glow', 'text-white');
-                } else {
-                    button.classList.remove('nav-category-glow', 'text-white');
-                    button.classList.add('nav-category-glass', 'text-gray-300');
-                }
-            });
-        }
-
-        // --- Event Listeners ---
-        window.onload = function () {
-            // Splash Screen
-            setTimeout(() => {
-                document.getElementById('splash-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splash-screen').style.display = 'none';
-                }, 500); // Coincide con la transición de opacidad
-            }, 2500); // Duración total de la carga
-
-            lucide.createIcons();
-            
-            // Listeners del Modal
-            teamSizeSelect.addEventListener('change', updateModalLogic);
-            betAmountInput.addEventListener('input', updatePaymentSummary);
-            prizeTypeSelect.addEventListener('change', updatePaymentSummary);
-            paymentOptionSelect.addEventListener('change', updatePaymentSummary);
-            document.getElementById('confirm-duel-btn').addEventListener('click', generateVoucher);
-            
-            // Listeners de Filtros
-            const categoryButtons = document.querySelectorAll('.category-btn');
-            categoryButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    filterCategories(button.dataset.filter);
-                });
-            });
-
-            // Estado inicial
-            filterCategories('todos');
-            updateModalLogic(); // Para inicializar el modal correctamente
-        };
-    </script>
 </body>
 </html>

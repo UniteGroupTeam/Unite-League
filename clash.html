@@ -16,45 +16,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Exo 2', sans-serif; background-color: #111111; color: #e5e7eb; padding-bottom: 80px; }
-        .rgb-text { background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: slideGradient 3s linear infinite; }
-        .rgb-border-anim { border: 2px solid transparent; border-image: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077) 1; border-image-slice: 1; animation: slideGradient 3s linear infinite; }
-        .rgb-bg-anim { background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff, #ff0077); background-size: 200% auto; animation: slideGradient 3s linear infinite; }
-        @keyframes slideGradient { to { background-position: 200% center; } }
-        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px 5px rgba(255, 0, 119, 0.7); } 50% { box-shadow: 0 0 25px 10px rgba(0, 119, 255, 0.7); } }
-        .pulse-btn { animation: pulse-glow 2.5s infinite; }
-        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); }
-        .modal-bg { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0a0a0a; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.5s ease-out; }
-        #splash-logo { width: 120px; animation: pulse-rgb-splash 2s infinite; }
-        .loader-bar { width: 150px; height: 4px; background-color: #333; border-radius: 2px; overflow: hidden; margin-top: 20px; }
-        .loader-bar-inner { width: 100%; height: 100%; background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff); animation: loading 2.5s ease-out forwards; }
-        @keyframes loading { from { width: 0%; } to { width: 100%; } }
-        @keyframes pulse-rgb-splash { 0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 0, 119, 0.7)); } 50% { filter: drop-shadow(0 0 20px rgba(0, 119, 255, 0.7)); } }
-        .bottom-nav-glass { background: rgba(17, 17, 17, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.05); position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; border-radius: 1.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 50; }
-        .nav-item-active { position: relative; color: #0077ff; } /* Azul para Clash Royale */
-        .nav-item-active::before { content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background-color: #0077ff; border-radius: 50%; z-index: -1; opacity: 0.15; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes popIn { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 0.15; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes pulse-logo-aura { 0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 0, 119, 0.8)); } 50% { filter: drop-shadow(0 0 12px rgba(0, 119, 255, 0.8)); } }
-        .logo-aura { animation: pulse-logo-aura 3s infinite; }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body class="antialiased">
 
     <!-- Pantalla de Carga -->
     <div id="splash-screen">
         <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" id="splash-logo">
-        <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+        <div class="loader-ring"></div>
     </div>
 
     <!-- Barra de Navegación Superior -->
     <nav class="sticky top-0 z-40 bg-gray-950/90 backdrop-blur-md px-4 py-3 flex justify-between items-center border-b border-gray-800/50">
-        <!-- Íconos de Juego (PC) -->
-        <div class="hidden md:flex items-center gap-4">
+        <!-- Íconos de Navegación Izquierda (PC) -->
+        <div class="hidden md:flex items-center gap-5">
             <!-- Fortnite (Inactivo) -->
             <a href="index.html" class="text-gray-400 hover:text-white transition" title="Fortnite">
                 <i data-lucide="swords" class="w-6 h-6"></i>
@@ -63,6 +38,10 @@
             <a href="clash.html" class="relative text-blue-500" title="Clash Royale">
                 <i data-lucide="castle" class="w-6 h-6"></i>
                 <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-blue-500 rounded-full"></span>
+            </a>
+            <!-- Reglas (Inactivo) -->
+            <a href="reglas.html" class="text-gray-400 hover:text-white transition" title="Reglas">
+                <i data-lucide="book-open" class="w-6 h-6"></i>
             </a>
         </div>
         <!-- Ícono de Búsqueda (Móvil) -->
@@ -75,7 +54,7 @@
             <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" class="w-8 h-8 logo-aura">
             <span class="text-xl font-bold tracking-tighter text-white">LEAGUE</span>
         </a>
-        <!-- Iconos Derecha (Campana y Búsqueda PC) -->
+        <!-- Iconos Derecha (Campana y Búsqueda PC y Usuario) -->
         <div class="flex items-center gap-4">
             <button onclick="openSearchModal()" class="text-gray-400 hover:text-white transition hidden md:block">
                 <i data-lucide="search" class="w-6 h-6"></i>
@@ -83,6 +62,9 @@
             <button onclick="openNotifications()" class="text-gray-400 hover:text-white transition relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
                 <span class="absolute top-0 right-0 w-2 h-2 bg-blue-500 rounded-full border border-gray-950"></span>
+            </button>
+            <button id="nav-auth-btn" onclick="openLoginModal()" class="text-white bg-pink-600 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold hover:bg-pink-500 transition text-sm">
+                Entrar
             </button>
         </div>
     </nav>
@@ -110,11 +92,14 @@
         </div>
     </div>
     
-    <!-- Modal de Búsqueda (Oculto) -->
-    <div id="search-modal" class="hidden fixed top-0 left-0 w-full h-full z-50 modal-bg" onclick="closeSearchModal()">
-        <div class="absolute top-20 left-1/2 -translate-x-1/2 w-11/12 max-w-lg bg-gray-900 rounded-2xl shadow-lg border border-gray-800 p-4 fade-in" onclick="event.stopPropagation()">
-            <h3 class="text-lg font-bold text-white mb-4">Buscar Torneos de Clash Royale</h3>
-            <input type="text" id="search-input" onkeyup="filterContent()" placeholder="Buscar por nombre (ej. 'Pass Royale', '1v1')" class="w-full bg-gray-800 text-white placeholder-gray-500 rounded-lg px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <!-- Panel de Búsqueda (Desplegable) -->
+    <div id="search-modal" class="hidden fixed top-16 left-0 w-full z-40 bg-gray-950/95 backdrop-blur-md border-b border-gray-800 p-4 fade-in shadow-xl">
+        <div class="max-w-3xl mx-auto flex items-center gap-3 relative">
+            <i data-lucide="search" class="w-5 h-5 text-gray-500 absolute left-4"></i>
+            <input type="text" id="search-input" onkeyup="filterItems('search-input', 'tournament-list-cr', 'searchable-item')" placeholder="Buscar por nombre (ej. 'Pass Royale', '1v1')..." class="w-full bg-gray-900 text-white placeholder-gray-500 rounded-lg pl-12 pr-12 py-3 border border-gray-800 focus:outline-none focus:border-blue-500 transition-colors">
+            <button onclick="closeSearchModal()" class="absolute right-4 text-gray-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
         </div>
     </div>
 
@@ -187,18 +172,10 @@
             <section class="tournament-section">
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Síguenos en Redes</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <a href="https://www.tiktok.com/@pixl_cm" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i data-lucide="film" class="w-5 h-5"></i>
-                            <span>TikTok</span>
-                        </a>
-                        <a href="https://www.instagram.com/rodricg30/" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i data-lucide="instagram" class="w-5 h-5"></i>
-                            <span>Instagram</span>
-                        </a>
-                        <a href="https://www.youtube.com/@PIXL_cm" target="_blank" class="flex items-center justify-center gap-3 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
-                            <i data-lucide="youtube" class="w-5 h-5"></i>
-                            <span>YouTube</span>
+                    <div class="flex justify-center">
+                        <a href="https://www.instagram.com/rodricg30/" target="_blank" class="flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold py-3 px-10 rounded-lg hover:opacity-90 transition-opacity w-full md:w-auto shadow-lg shadow-pink-500/20">
+                            <i data-lucide="instagram" class="w-6 h-6"></i>
+                            <span>Síguenos en Instagram</span>
                         </a>
                     </div>
                 </div>
@@ -208,7 +185,7 @@
 
     <!-- Modal: Crear Duelo Personalizado (Clash Royale) -->
     <div id="create-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4" onclick="closeModal()">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-lg mx-auto p-6 relative fade-in" onclick="event.stopPropagation()">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-lg w-full max-w-lg mx-auto p-6 relative fade-in max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <!-- Contenido del Modal (Formulario) -->
             <div id="modal-form-content">
                 <div class="flex justify-between items-center mb-4">
@@ -376,237 +353,7 @@
         </a>
     </nav>
 
-    <script>
-        // --- Constantes del DOM ---
-        const createModal = document.getElementById('create-modal');
-        const searchModal = document.getElementById('search-modal');
-        const notificationsPanel = document.getElementById('notifications-panel');
-        const modalFormContent = document.getElementById('modal-form-content');
-        const modalVoucherContent = document.getElementById('modal-voucher-content');
-
-        // --- Selectores de Formulario ---
-        const teamSizeSelect = document.getElementById('team-size');
-        const bestOfSelect = document.getElementById('best-of');
-        const trophiesInput = document.getElementById('trophies');
-        const betAmountInput = document.getElementById('bet-amount');
-        const teamOptions = document.getElementById('team-options');
-        const teamNameInput = document.getElementById('team-name');
-        const paymentOptionSelect = document.getElementById('payment-option');
-        const prizeTypeSelect = document.getElementById('prize-type');
-        const visibilitySelect = document.getElementById('visibility');
-        const negotiableCheckbox = document.getElementById('negotiable');
-        const passWarning = document.getElementById('pass-warning');
-
-        // --- Selectores de Resumen ---
-        const totalPotEl = document.getElementById('total-pot');
-        const commissionFeeEl = document.getElementById('commission-fee');
-        const finalPrizeEl = document.getElementById('final-prize');
-        const yourPaymentEl = document.getElementById('your-payment');
-
-        // --- Selectores de Tarjeta (Voucher) ---
-        const voucherCard = document.getElementById('voucher-card');
-        const voucherMode = document.getElementById('voucher-mode');
-        const voucherBet = document.getElementById('voucher-bet');
-        const voucherPrize = document.getElementById('voucher-prize');
-        const voucherVisibility = document.getElementById('voucher-visibility');
-        const voucherCode = document.getElementById('voucher-code');
-        const voucherInstructions = document.getElementById('voucher-instructions');
-        const negotiableBadge = document.getElementById('negotiable-badge');
-
-        // --- Constantes de Lógica ---
-        const PASS_ROYALE_MIN_POT = 80; // Mínimo de $80 MXN de bote
-
-        // --- Funciones de Modales (Notificaciones, Búsqueda) ---
-        function openNotifications() { notificationsPanel.classList.remove('hidden'); }
-        function closeNotifications() { notificationsPanel.classList.add('hidden'); }
-        function openSearchModal() { searchModal.classList.remove('hidden'); document.getElementById('search-input').focus(); }
-        function closeSearchModal() { searchModal.classList.add('hidden'); }
-        
-        // --- Funciones del Modal Principal (Crear Duelo) ---
-        function openModal() {
-            modalFormContent.classList.remove('hidden');
-            modalVoucherContent.classList.add('hidden');
-            updateModalLogic(); // Asegurarse de que el modal esté actualizado
-            createModal.classList.remove('hidden');
-        }
-        
-        function openModalWithMode(teamSize) {
-            teamSizeSelect.value = teamSize;
-            updateModalLogic(); // Actualiza las opciones
-            openModal();
-        }
-        
-        function closeModal() {
-            createModal.classList.add('hidden');
-        }
-        
-        // --- Lógica de Cálculo de Pagos ---
-        function updatePaymentSummary() {
-            const teamSize = parseInt(teamSizeSelect.value[0]); // CORREGIDO: "1v1"[0] es "1"
-            const totalPlayers = teamSize * 2; // 2, 4
-            const bet = parseFloat(betAmountInput.value) || 0;
-            const prizeType = prizeTypeSelect.value;
-            const paymentOption = paymentOptionSelect.value;
-
-            const totalPot = bet * totalPlayers;
-            let commission = 0;
-            let finalPrize = 0;
-
-            passWarning.classList.add('hidden'); // Ocultar advertencia por defecto
-
-            if (prizeType === 'cash') {
-                commission = totalPot * 0.10;
-                finalPrize = totalPot - commission;
-                finalPrizeEl.textContent = `$${finalPrize.toFixed(2)} MXN`;
-                commissionFeeEl.textContent = `-$${commission.toFixed(2)} MXN`;
-            } else { // pass
-                commission = 0;
-                commissionFeeEl.textContent = "$0.00 MXN";
-                if (totalPot >= PASS_ROYALE_MIN_POT) {
-                    finalPrizeEl.textContent = "1x Pass Royale";
-                } else {
-                    finalPrizeEl.textContent = "$0.00 MXN (No alcanza)";
-                    passWarning.classList.remove('hidden');
-                }
-            }
-            
-            totalPotEl.textContent = `$${totalPot.toFixed(2)} MXN`;
-
-            let payment = 0;
-            if (teamSize > 1 && paymentOption === 'team') {
-                payment = bet * teamSize;
-            } else {
-                payment = bet;
-            }
-            yourPaymentEl.textContent = `$${payment.toFixed(2)} MXN`;
-        }
-
-        // --- Lógica de Actualización del Modal ---
-        function updateModalLogic() {
-            const teamSize = teamSizeSelect.value;
-            const prizeTypeOptions = prizeTypeSelect.options;
-            const visibilityOptions = visibilitySelect.options; // Opciones de visibilidad
-
-            if (teamSize === '1v1') {
-                teamOptions.classList.add('hidden');
-                // Habilitar Pass Royale para 1v1
-                prizeTypeOptions[1].disabled = false;
-                // Etiquetas para 1v1
-                visibilityOptions[0].text = "Público (Buscar Oponente)";
-                visibilityOptions[1].text = "Contra Amigos";
-            } else { // 2v2
-                teamOptions.classList.remove('hidden');
-                // Deshabilitar Pass Royale para 2v2
-                prizeTypeOptions[1].disabled = true;
-                // Si estaba seleccionado, cambiar a "Efectivo"
-                if (prizeTypeSelect.value === 'pass') {
-                    prizeTypeSelect.value = 'cash';
-                }
-                // Etiquetas para 2v2 (¡TU NUEVA LÓGICA!)
-                visibilityOptions[0].text = "Buscar Dúo Oponente (Matchmaking)";
-                visibilityOptions[1].text = "Juego Privado (Invitar 3 amigos)";
-            }
-            updatePaymentSummary();
-        }
-
-        // --- Generar Tarjeta (Voucher) ---
-        function generateVoucher() {
-            const teamSize = teamSizeSelect.value;
-            const bestOf = bestOfSelect.options[bestOfSelect.selectedIndex].text;
-            const bet = parseFloat(betAmountInput.value) || 0;
-            const prize = finalPrizeEl.textContent;
-            const visibility = visibilitySelect.options[visibilitySelect.selectedIndex].text;
-            const teamName = teamNameInput.value || `Equipo-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
-            const isNegotiable = negotiableCheckbox.checked;
-
-            voucherMode.textContent = `${teamSize.toUpperCase()} - Mejor de ${bestOf.split(' ')[0]}`;
-            voucherBet.textContent = `$${bet.toFixed(2)} MXN (por jugador)`;
-            voucherPrize.textContent = prize;
-            voucherVisibility.textContent = visibility;
-
-            if (isNegotiable) {
-                negotiableBadge.classList.remove('hidden');
-            } else {
-                negotiableBadge.classList.add('hidden');
-            }
-            
-            const randomCode = Math.random().toString(36).substr(2, 4).toUpperCase();
-            let code = `semicompañero${teamSize}-${teamName.replace(/\s+/g, '')}-${randomCode}`;
-            voucherCode.textContent = code;
-
-            if (visibilitySelect.value === 'public') {
-                if (teamSize === '1v1') {
-                    voucherInstructions.textContent = "¡Publica esta tarjeta en Discord para encontrar un oponente!";
-                } else {
-                    voucherInstructions.textContent = "¡Publica esta tarjeta en Discord para encontrar un dúo oponente!";
-                }
-            } else { // private
-                if (teamSize === '1v1') {
-                    voucherInstructions.textContent = "¡Envía este código a tu amigo para el duelo!";
-                } else {
-                    voucherInstructions.textContent = "¡Envía este código a tus 3 amigos para el juego privado!";
-                }
-            }
-
-            modalFormContent.classList.add('hidden');
-            modalVoucherContent.classList.remove('hidden');
-        }
-
-        // --- Copiar al Portapapeles (Método antiguo) ---
-        function copyToClipboard() {
-            const code = voucherCode.textContent;
-            const el = document.createElement('textarea');
-            el.value = code;
-            document.body.appendChild(el);
-            el.select();
-            try {
-                document.execCommand('copy');
-                alert('¡Código copiado!');
-            } catch (err) {
-                alert('Error al copiar. Por favor, copia manually.');
-            }
-            document.body.removeChild(el);
-        }
-
-        // --- Filtro de Búsqueda ---
-        function filterContent() {
-            const input = document.getElementById('search-input');
-            const filter = input.value.toLowerCase();
-            const list = document.getElementById('tournament-list-cr');
-            const items = list.getElementsByClassName('searchable-item');
-
-            for (let i = 0; i < items.length; i++) {
-                let title = items[i].dataset.title.toLowerCase();
-                if (title.includes(filter)) {
-                    items[i].style.display = "";
-                } else {
-                    items[i].style.display = "none";
-                }
-            }
-        }
-
-        // --- Event Listeners ---
-        window.onload = function () {
-            // Splash Screen
-            setTimeout(() => {
-                document.getElementById('splash-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splash-screen').style.display = 'none';
-                }, 500); 
-            }, 2500); 
-
-            lucide.createIcons();
-            
-            // Listeners del Modal
-            teamSizeSelect.addEventListener('change', updateModalLogic);
-            betAmountInput.addEventListener('input', updatePaymentSummary);
-            prizeTypeSelect.addEventListener('change', updatePaymentSummary);
-            paymentOptionSelect.addEventListener('change', updatePaymentSummary);
-            document.getElementById('confirm-duel-btn').addEventListener('click', generateVoucher);
-            
-            // Estado inicial
-            updateModalLogic(); // Para inicializar el modal correctamente
-        };
-    </script>
+    <script src="common.js"></script>
+    <script src="clash.js"></script>
 </body>
 </html>

@@ -16,37 +16,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        html { scroll-behavior: smooth; } /* Para el salto a #clash-rules */
-        body { font-family: 'Exo 2', sans-serif; background-color: #111111; color: #e5e7eb; padding-bottom: 80px; }
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0a0a0a; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.5s ease-out; }
-        #splash-logo { width: 120px; animation: pulse-rgb-splash 2s infinite; }
-        .loader-bar { width: 150px; height: 4px; background-color: #333; border-radius: 2px; overflow: hidden; margin-top: 20px; }
-        .loader-bar-inner { width: 100%; height: 100%; background: linear-gradient(90deg, #ff0077, #7700ff, #0077ff); animation: loading 2.5s ease-out forwards; }
-        @keyframes loading { from { width: 0%; } to { width: 100%; } }
-        @keyframes pulse-rgb-splash { 0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 0, 119, 0.7)); } 50% { filter: drop-shadow(0 0 20px rgba(0, 119, 255, 0.7)); } }
-        .bottom-nav-glass { background: rgba(17, 17, 17, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.05); position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; border-radius: 1.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 50; }
-        .nav-item-active { position: relative; color: #ff0077; } /* Rosa para Reglas */
-        .nav-item-active::before { content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background-color: #ff0077; border-radius: 50%; z-index: -1; opacity: 0.15; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes popIn { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 0.15; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes pulse-logo-aura { 0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 0, 119, 0.8)); } 50% { filter: drop-shadow(0 0 12px rgba(0, 119, 255, 0.8)); } }
-        .logo-aura { animation: pulse-logo-aura 3s infinite; }
-        .modal-bg { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body class="antialiased">
     <!-- Pantalla de Carga -->
     <div id="splash-screen">
         <img src="https://i.imgur.com/sXTC0BS.png" alt="Unite League Logo" id="splash-logo">
-        <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+        <div class="loader-ring"></div>
     </div>
 
     <!-- Barra de Navegación Superior -->
     <nav class="sticky top-0 z-40 bg-gray-950/90 backdrop-blur-md px-4 py-3 flex justify-between items-center border-b border-gray-800/50">
-        <!-- Íconos de Juego (PC) -->
-        <div class="hidden md:flex items-center gap-4">
+        <!-- Íconos de Navegación Izquierda (PC) -->
+        <div class="hidden md:flex items-center gap-5">
             <!-- Fortnite (Inactivo) -->
             <a href="index.html" class="text-gray-400 hover:text-white transition" title="Fortnite">
                 <i data-lucide="swords" class="w-6 h-6"></i>
@@ -54,6 +36,11 @@
             <!-- Clash Royale (Inactivo) -->
             <a href="clash.html" class="text-gray-400 hover:text-white transition" title="Clash Royale">
                 <i data-lucide="castle" class="w-6 h-6"></i>
+            </a>
+            <!-- Reglas (Activo) -->
+            <a href="reglas.html" class="relative text-white" title="Reglas">
+                <i data-lucide="book-open" class="w-6 h-6"></i>
+                <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-white rounded-full"></span>
             </a>
         </div>
         <!-- Ícono de Búsqueda (Móvil) -->
@@ -66,12 +53,15 @@
             <span class="text-xl font-bold tracking-tighter text-white">LEAGUE</span>
         </a>
         
-        <!-- Iconos Derecha (Campana y Búsqueda PC) -->
+        <!-- Iconos Derecha (Campana y Búsqueda PC y Usuario) -->
         <div class="flex items-center gap-4">
             <span class="w-6 hidden md:block"></span> <!-- Espaciador derecho en PC -->
             <button onclick="openNotifications()" class="text-gray-400 hover:text-white transition relative">
                 <i data-lucide="bell" class="w-6 h-6"></i>
                 <span class="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-full border border-gray-950"></span>
+            </button>
+            <button id="nav-auth-btn" onclick="openLoginModal()" class="text-white bg-pink-600 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold hover:bg-pink-500 transition text-sm">
+                Entrar
             </button>
         </div>
     </nav>
@@ -120,16 +110,16 @@
                 <!-- Regla 2: Verificación -->
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
                     <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="shield-check" class="w-6 h-6 mr-2 text-green-400"></i>2. Verificación de Partidas</h2>
-                    <p class="text-gray-300">Al finalizar tu partida (o al ser eliminado), el ganador (o ambos jugadores en duelos) debe tomar una **captura de pantalla** clara del contador de kills/victoria y subirla al canal de Discord correspondiente.</p>
+                    <p class="text-gray-300">Al finalizar tu partida (o al ser eliminado), el ganador debe enviar **obligatoriamente un clip (video)** donde se muestre claramente su usuario y en qué lugar quedaron (o el contador de kills/victoria). Este clip debe subirse al canal de Discord correspondiente para reclamar la victoria.</p>
                 </div>
-                <!-- Regla 3: Pagos y Comisiones -->
+                <!-- Regla 3: Pagos y Premios -->
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
-                    <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="dollar-sign" class="w-6 h-6 mr-2 text-yellow-400"></i>3. Pagos y Comisiones</h2>
+                    <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="dollar-sign" class="w-6 h-6 mr-2 text-yellow-400"></i>3. Pagos y Premios</h2>
                     <ul class="list-disc list-inside space-y-2 text-gray-300">
                         <li>Todos los pagos de entrada se realizan vía transferencia (se proporcionarán detalles en Discord).</li>
+                        <li><span class="font-bold text-white">Equipos y Pagos:</span> Nosotros transferimos la ganancia total (si es en efectivo) a un **solo usuario ganador** que debe ser acordado por el equipo antes de comenzar el torneo.</li>
                         <li><span class="font-bold text-white">Premios en Efectivo:</span> Se aplica una comisión fija del <span class="font-bold text-pink-400">10%</span> sobre el bote total acumulado.</li>
-                        <li><span class="font-bold text-white">Premios en Pavos (V-Bucks):</span> <span class="font-bold text-green-400">NO hay comisión.</span> El 100% del bote se convierte a Pavos a una tasa preferencial (ej. $100 MXN = 1,000 Pavos).</li>
-                        <li>El mínimo para premios de Pavos (ej. 1,000 Pavos) es un bote acumulado de <span class="font-bold text-white">$50 MXN</span>.</li>
+                        <li><span class="font-bold text-white">Premios en Pavos (V-Bucks):</span> <span class="font-bold text-green-400">NO hay comisión.</span> Mínimo $45 MXN por lado requerido. <span class="text-yellow-400 font-semibold mb-1 block mt-1">Método de entrega:</span> Se te proporcionará acceso a una cuenta con los pavos ganados para que, desde la tienda de esa cuenta, te envíes los artículos deseados como regalo a tu cuenta principal.</li>
                     </ul>
                 </div>
                 <!-- Regla 4: Duelos Personalizados -->
@@ -141,6 +131,11 @@
                         <li><span class="font-bold text-white">Duelo de Amigos:</span> Envía el código de equipo a tu compañero (en 2v2+) y al equipo rival para confirmar.</li>
                         <li>Si seleccionas "Apuesta Negociable", otros jugadores pueden ofrecerte subir la apuesta en Discord. El duelo se debe crear de nuevo con la apuesta final.</li>
                     </ul>
+                </div>
+                <!-- Regla 5: Transmisiones -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                    <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="video" class="w-6 h-6 mr-2 text-purple-400"></i>5. Transmisiones (Streams)</h2>
+                    <p class="text-gray-300">Para fomentar la transparencia y el entretenimiento de la comunidad, **los torneos grandes serán transmitidos en vivo** a través de Twitch o YouTube por los organizadores y creadores de contenido oficiales de Unite League.</p>
                 </div>
             </div>
         </section>
@@ -165,15 +160,16 @@
                 <!-- Regla 2: Verificación -->
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
                     <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="shield-check" class="w-6 h-6 mr-2 text-green-400"></i>2. Verificación y Trofeos</h2>
-                    <p class="text-gray-300 mb-3">Al finalizar tu partida (o serie), el ganador debe tomar una **captura de pantalla** clara de la victoria y subirla al canal de Discord correspondiente.</p>
-                    <p class="text-gray-300"><span class="font-bold text-yellow-400">Trofeos:</span> La cantidad de trofeos que indiques para el matchmaking será verificada por un administrador. Si la información es incorrecta, podrías ser penalizado o descalificado.</p>
+                    <p class="text-gray-300 mb-3">Al finalizar tu partida (o serie), el ganador debe enviar **obligatoriamente un clip (video)** donde se muestre claramente la victoria con su usuario. Este clip debe subirse al canal de Discord correspondiente.</p>
+                    <p class="text-gray-300"><span class="font-bold text-yellow-400">Trofeos:</span> La cantidad de trofeos que indiques para el matchmaking será verificada por un administrador.</p>
                 </div>
                 <!-- Regla 3: Pagos y Premios -->
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
                     <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="dollar-sign" class="w-6 h-6 mr-2 text-yellow-400"></i>3. Pagos y Premios</h2>
                     <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li><span class="font-bold text-white">Equipos y Pagos:</span> Nosotros transferimos la ganancia total (si es en efectivo) a un **solo usuario ganador** que debe ser acordado por el equipo antes del torneo.</li>
                         <li><span class="font-bold text-white">Premios en Efectivo:</span> Se aplica una comisión fija del <span class="font-bold text-pink-400">10%</span> sobre el bote total.</li>
-                        <li><span class="font-bold text-white">Pass Royale:</span> <span class="font-bold text-yellow-500">NO hay comisión.</span> El bote total debe ser de mínimo <span class="font-bold text-white">$80.00 MXN</span> para calificar para este premio.</li>
+                        <li><span class="font-bold text-white">Pass Royale:</span> <span class="font-bold text-yellow-500">NO hay comisión.</span> El bote total debe ser de mínimo <span class="font-bold text-white">$80.00 MXN</span>.</li>
                         <li>El Pass Royale <span class="font-bold text-red-400">NO ESTÁ DISPONIBLE</span> para duelos 2v2 (solo efectivo).</li>
                     </ul>
                 </div>
@@ -181,11 +177,15 @@
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
                     <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="swords" class="w-6 h-6 mr-2 text-red-400"></i>4. Creación de Duelos</h2>
                      <ul class="list-disc list-inside space-y-2 text-gray-300">
-                        <li>Usa el botón "Crear Duelo" en la app de Clash Royale para generar una tarjeta (voucher).</li>
-                        <li><span class="font-bold text-white">Duelo Público:</span> Publica la tarjeta en Discord para encontrar oponentes con un rango de trofeos similar.</li>
-                        <li><span class="font-bold text-white">Duelo de Amigos:</span> Envía el código de equipo a tu compañero (en 2v2) y al equipo rival para confirmar.</li>
-                        <li>Puedes elegir si el duelo es a "Mejor de 1, 3 o 5" partidas.</li>
+                        <li>Usa el botón "Crear Duelo" en la app para generar una tarjeta (voucher).</li>
+                        <li><span class="font-bold text-white">Duelo Público:</span> Publica la tarjeta en Discord para encontrar oponentes.</li>
+                        <li><span class="font-bold text-white">Duelo de Amigos:</span> Envía el código a tu compañero y al rival.</li>
                     </ul>
+                </div>
+                <!-- Regla 5: Transmisiones -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                    <h2 class="text-xl font-bold text-white mb-3 flex items-center"><i data-lucide="video" class="w-6 h-6 mr-2 text-purple-400"></i>5. Transmisiones (Streams)</h2>
+                    <p class="text-gray-300">Para fomentar la transparencia y el entretenimiento de la comunidad, **los torneos grandes serán transmitidos en vivo** a través de Twitch o YouTube por los organizadores y creadores de contenido oficiales de Unite League.</p>
                 </div>
             </div>
         </section>
@@ -211,21 +211,6 @@
         </a>
     </nav>
 
-    <script>
-        function openNotifications() { document.getElementById('notifications-panel').classList.remove('hidden'); }
-        function closeNotifications() { document.getElementById('notifications-panel').classList.add('hidden'); }
-
-        window.onload = function () {
-            // Splash Screen
-            setTimeout(() => {
-                document.getElementById('splash-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splash-screen').style.display = 'none';
-                }, 500); 
-            }, 2500); 
-
-            lucide.createIcons();
-        };
-    </script>
+    <script src="common.js"></script>
 </body>
 </html>
