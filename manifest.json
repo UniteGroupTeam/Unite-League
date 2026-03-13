@@ -1,7 +1,7 @@
 {
   "name": "Unite League",
   "short_name": "Unite",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#030712",
   "theme_color": "#ec4899",

@@ -1,12 +1,12 @@
 const CACHE_NAME = 'unite-league-v1';
 const ASSETS = [
-    '/index.html',
-    '/clash.html',
-    '/reglas.html',
-    '/index.css',
-    '/common.js',
-    '/fortnite.js',
-    '/clash.js'
+    'index.html',
+    'clash.html',
+    'reglas.html',
+    'index.css',
+    'common.js',
+    'fortnite.js',
+    'clash.js'
 ];
 
 self.addEventListener('install', event => {
